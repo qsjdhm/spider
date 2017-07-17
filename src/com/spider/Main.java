@@ -1,8 +1,6 @@
 package com.spider;
 
-import com.spider.service.impl.TopServiceImpl;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import com.spider.service.impl.HousesServiceImpl;
 
 import java.io.IOException;
 
@@ -20,8 +18,8 @@ public class Main {
         //System.out.println(doc.body().getElementById("Toprs").select(".tpic"));
         //System.out.println(doc);
 
-        TopServiceImpl topService = new TopServiceImpl();
-        topService.getTopHouses();
+        HousesServiceImpl housesService = new HousesServiceImpl();
+        System.out.print(housesService.getTop5Houses());
 
 
     }
