@@ -1,5 +1,7 @@
 package com.spider.model;
 
+import java.util.UUID;
+
 /**
  * Created by zhangyan on 17/7/19.
  * 房产商原型
@@ -10,7 +12,7 @@ public class TReb {
 
     }
 
-    private String rebId = null;  // 房产商ID
+    private UUID rebId = null;  // 房产商ID
     private String rebName = null;  // 房产商名称
     private String fdcUrl = null;  // 政府网URL
     private String qualificationLevel = null;  // 资质等级
@@ -23,11 +25,11 @@ public class TReb {
     private String introduction = null;  // 企业简介
 
 
-    public String getRebId() {
+    public UUID getRebId() {
         return rebId;
     }
 
-    public void setRebId(String rebId) {
+    public void setRebId(UUID rebId) {
         this.rebId = rebId;
     }
 

@@ -2,6 +2,7 @@ package com.spider.service;
 
 import com.spider.model.TReb;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface IRebService {
     public List<TReb> getAllReb();
 
     /**
-     * 根据抓取的数据解析出房产商的数据集合
+     * 根据抓取的数据解析出每个房产商的数据
      */
-    public List<TReb> analysisRebDataByDocument(Document rebDoc);
+    public TReb analysisRebDataByElement(Element tr);
 }
