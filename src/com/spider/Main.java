@@ -1,6 +1,6 @@
 package com.spider;
 
-import com.spider.service.impl.HousesServiceImpl;
+import com.spider.service.impl.RebServiceImpl;
 
 import java.io.IOException;
 
@@ -18,9 +18,10 @@ public class Main {
         //System.out.println(doc.body().getElementById("Toprs").select(".tpic"));
         //System.out.println(doc);
 
-        HousesServiceImpl housesService = new HousesServiceImpl();
-        System.out.print(housesService.getTop5Houses());
-
+//        HousesServiceImpl housesService = new HousesServiceImpl();
+//        System.out.print(housesService.getTop5Houses());
+        RebServiceImpl rebService = new RebServiceImpl();
+        System.out.print(rebService.getAllReb());
 
     }
 }
