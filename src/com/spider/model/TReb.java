@@ -21,6 +21,7 @@ public class TReb {
     private String address = null;  // 企业地址
     private String phone = null;  // 联系电话
     private String mail = null;  // 企业邮箱
+    private String registeredCapital = null;  // 注册资金
     private String type = null;  // 企业类型
     private String introduction = null;  // 企业简介
 
@@ -95,6 +96,14 @@ public class TReb {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public String getRegisteredCapital() {
+        return registeredCapital;
+    }
+
+    public void setRegisteredCapital(String registeredCapital) {
+        this.registeredCapital = registeredCapital;
     }
 
     public String getType() {

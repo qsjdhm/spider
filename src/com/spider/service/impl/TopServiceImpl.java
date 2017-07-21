@@ -41,7 +41,7 @@ public class TopServiceImpl implements ITopService {
         Elements tpics = htmlDoc.select(topHouseItem);
         for (Element tpic : tpics) {
             // 从element中解析数据
-            String houseName = analysisHouseUtil.AnalysisName(tpic.select(".pbtext a").text());
+            String houseName = analysisHouseUtil.extractValidHousesName(tpic.select(".pbtext a").text());
             String housePath = tpic.select(">a").attr("href");
             String houseCover = "";
 

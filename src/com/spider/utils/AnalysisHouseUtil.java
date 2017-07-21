@@ -6,8 +6,11 @@ package com.spider.utils;
  */
 public class AnalysisHouseUtil {
 
-    // 处理名称，把无用的字符串去掉
-    public String AnalysisName (String name) {
+    /**
+     * 提取有效的楼盘名称
+     * return name
+     */
+    public String extractValidHousesName (String name) {
         if (name.split("]").length > 1) {
             name = name.split("]")[1];
         }

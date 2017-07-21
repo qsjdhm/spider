@@ -1,6 +1,6 @@
 package com.spider;
 
-import com.spider.service.impl.RebServiceImpl;
+import com.spider.service.impl.HousesServiceImpl;
 
 import java.io.IOException;
 
@@ -20,8 +20,12 @@ public class Main {
 
 //        HousesServiceImpl housesService = new HousesServiceImpl();
 //        System.out.print(housesService.getTop5Houses());
-        RebServiceImpl rebService = new RebServiceImpl();
-        System.out.print(rebService.getAllReb());
+
+//        RebServiceImpl rebService = new RebServiceImpl();
+//        System.out.print(rebService.getAllReb());
+
+        HousesServiceImpl housesService = new HousesServiceImpl();
+        System.out.print(housesService.getAllHouses());
 
     }
 }
