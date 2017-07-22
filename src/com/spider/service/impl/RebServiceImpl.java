@@ -104,6 +104,8 @@ public class RebServiceImpl implements IRebService {
             registeredCapital = trs.eq(5).select("td").eq(1).text();  // 注册资金
             type = trs.eq(6).select("td").eq(1).text();  // 企业类型
             introduction = trs.eq(7).select("td").eq(1).text();  // 企业简介
+
+            LogFile.writerLogFile(spiderLogPath, "info", "抓取房产商["+name+"]详细数据完成!");
         } catch (IOException e) {
             try {
                 LogFile.writerLogFile(spiderLogPath, "error", "抓取房产商详细数据异常："+e);
@@ -125,12 +127,6 @@ public class RebServiceImpl implements IRebService {
         reb.setRegisteredCapital(registeredCapital);
         reb.setType(type);
         reb.setIntroduction(introduction);
-
-        try {
-            LogFile.writerLogFile(spiderLogPath, "info", "抓取房产商["+name+"]详细数据完成!");
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
 
         return reb;
     }

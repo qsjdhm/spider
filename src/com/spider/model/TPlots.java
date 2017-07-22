@@ -1,5 +1,7 @@
 package com.spider.model;
 
+import java.util.UUID;
+
 /**
  * Created by zhangyan on 17/7/19.
  * 单元楼原型
@@ -10,7 +12,7 @@ public class TPlots {
 
     }
 
-    private String plotsId = null;  // 单元楼ID
+    private UUID plotsId = null;  // 单元楼ID
     private String plotsName = null;  // 单元楼名称
     private String fdcUrl = null;  // 单元楼页面政府网URL
     private String area = null;  // 建筑面积
@@ -21,19 +23,19 @@ public class TPlots {
     private String landUseCertificate = null;  // 国有土地使用证
     private String planningPermit = null;  // 建设工程规划许可证
     private String constructionPermit = null;  // 建设工程施工许可证
-    private String pFloorId = null;  // 所属地块ID
+    private UUID pFloorId = null;  // 所属地块ID
     private String pFloorName = null;  // 所属地块名称
-    private String pHousesId = null;  // 所属楼盘ID
+    private UUID pHousesId = null;  // 所属楼盘ID
     private String pHousesName = null;  // 所属楼盘名称
     private String pRebId = null;  // 所属房产商ID
     private String pRebName = null;  // 所属房产商名称
 
 
-    public String getPlotsId() {
+    public UUID getPlotsId() {
         return plotsId;
     }
 
-    public void setPlotsId(String plotsId) {
+    public void setPlotsId(UUID plotsId) {
         this.plotsId = plotsId;
     }
 
@@ -117,11 +119,11 @@ public class TPlots {
         this.constructionPermit = constructionPermit;
     }
 
-    public String getpFloorId() {
+    public UUID getpFloorId() {
         return pFloorId;
     }
 
-    public void setpFloorId(String pFloorId) {
+    public void setpFloorId(UUID pFloorId) {
         this.pFloorId = pFloorId;
     }
 
@@ -133,11 +135,11 @@ public class TPlots {
         this.pFloorName = pFloorName;
     }
 
-    public String getpHousesId() {
+    public UUID getpHousesId() {
         return pHousesId;
     }
 
-    public void setpHousesId(String pHousesId) {
+    public void setpHousesId(UUID pHousesId) {
         this.pHousesId = pHousesId;
     }
 

@@ -1,5 +1,7 @@
 package com.spider.model;
 
+import java.util.UUID;
+
 /**
  * Created by zhangyan on 17/7/19.
  * 地块原型
@@ -10,7 +12,7 @@ public class TFloor {
 
     }
 
-    private String floorId = null;  // 地块ID
+    private UUID floorId = null;  // 地块ID
     private String floorName = null;  // 地块名称
     private String fdcUrl = null;  // 楼盘页面政府网URL
     private String canSold = null;  // 可售套数
@@ -19,16 +21,16 @@ public class TFloor {
     private String scale = null;  // 项目规模
     private String totalPlotsNumber = null;  // 总栋数
     private String property = null;  // 物业公司
-    private String pHousesId = null;  // 所属楼盘ID
+    private UUID pHousesId = null;  // 所属楼盘ID
     private String pHousesName = null;  // 所属楼盘名称
     private String pRebId = null;  // 所属房产商ID
     private String pRebName = null;  // 所属房产商名称
 
-    public String getFloorId() {
+    public UUID getFloorId() {
         return floorId;
     }
 
-    public void setFloorId(String floorId) {
+    public void setFloorId(UUID floorId) {
         this.floorId = floorId;
     }
 
@@ -96,11 +98,11 @@ public class TFloor {
         this.property = property;
     }
 
-    public String getpHousesId() {
+    public UUID getpHousesId() {
         return pHousesId;
     }
 
-    public void setpHousesId(String pHousesId) {
+    public void setpHousesId(UUID pHousesId) {
         this.pHousesId = pHousesId;
     }
 

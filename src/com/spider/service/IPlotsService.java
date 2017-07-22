@@ -1,6 +1,9 @@
 package com.spider.service;
 
+import com.spider.model.TFloor;
+import com.spider.model.THouses;
 import com.spider.model.TPlots;
+import org.jsoup.nodes.Element;
 
 import java.util.List;
 
@@ -11,13 +14,13 @@ import java.util.List;
 public interface IPlotsService {
 
     /**
-     * 根据地块url获取它的单元楼列表
+     * 根据地块获取它的单元楼列表
      */
-    public List<TPlots> getPlotsListByFloorUrl();
+    public List<TPlots> getPlotsListByFloor(TFloor floor);
 
     /**
-     * 根据单元楼url获取单个单元楼详细数据
+     * 根据抓取的单元楼详细数据获取单个单元楼详细数据
      */
-    public List<TPlots> getPlotsDetailsByPlotsUrl();
+    public TPlots getPlotsDetailsByElement(Element tr, TFloor floor);
 
 }

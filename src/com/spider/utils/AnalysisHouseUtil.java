@@ -10,7 +10,7 @@ public class AnalysisHouseUtil {
      * 提取有效的楼盘名称
      * return name
      */
-    public String extractValidHousesName (String name) {
+    public static String extractValidHousesName (String name) {
         if (name.split("]").length > 1) {
             name = name.split("]")[1];
         }

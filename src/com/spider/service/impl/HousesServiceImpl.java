@@ -4,6 +4,7 @@ import com.spider.model.TFloor;
 import com.spider.model.THouses;
 import com.spider.model.TPlots;
 import com.spider.service.IHousesService;
+import com.spider.utils.AnalysisHouseUtil;
 import com.spider.utils.LogFile;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -63,8 +64,9 @@ public class HousesServiceImpl implements IHousesService {
 //            } while (pageDoc != null);
 
 
-            // 根据每个楼盘名称，从政府网获取所有地块的数据
-
+            // 根据所有楼盘名称，从政府网获取所有地块的数据
+            FloorServiceImpl floorService = new FloorServiceImpl();
+            floorService.getFloorListByAllHouses(housesList);
 
 
         } catch (IOException e) {
@@ -98,6 +100,8 @@ public class HousesServiceImpl implements IHousesService {
             detailedDoc = Jsoup.connect(sfwUrl).get();
             averagePrice = detailedDoc.select(".prib").text();
             openingDate = detailedDoc.select(".kaipan").text();
+
+            LogFile.writerLogFile(spiderLogPath, "info", "抓取楼盘["+name+"]详细数据完成!");
         } catch (IOException e) {
             try {
                 LogFile.writerLogFile(spiderLogPath, "error", "抓取楼盘详细数据异常："+e);
@@ -109,17 +113,12 @@ public class HousesServiceImpl implements IHousesService {
 
         houses.setHousesId(UUID.randomUUID());
         houses.setHousesName(name);
+        houses.setFdcHousesName(AnalysisHouseUtil.extractValidHousesName(name));
         houses.setSfwUrl(sfwUrl);
         houses.setCover(cover);
         houses.setAddress(address);
         houses.setAveragePrice(averagePrice);
         houses.setOpeningDate(openingDate);
-
-        try {
-            LogFile.writerLogFile(spiderLogPath, "info", "抓取楼盘["+name+"]详细数据完成!");
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
 
         return houses;
     }

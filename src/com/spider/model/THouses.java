@@ -14,6 +14,7 @@ public class THouses {
 
     private UUID housesId = null;  // 楼盘ID
     private String housesName = null;  // 楼盘名称
+    private String fdcHousesName = null;  // 政府网查询时用的楼盘名称
     private String sfwUrl = null;  // 搜房网URL
     private String cover = null;  // 封面
     private String address = null;  // 地址
@@ -37,6 +38,14 @@ public class THouses {
 
     public void setHousesName(String housesName) {
         this.housesName = housesName;
+    }
+
+    public String getFdcHousesName() {
+        return fdcHousesName;
+    }
+
+    public void setFdcHousesName(String fdcHousesName) {
+        this.fdcHousesName = fdcHousesName;
     }
 
     public String getSfwUrl() {
