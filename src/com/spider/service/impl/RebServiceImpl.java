@@ -43,7 +43,8 @@ public class RebServiceImpl implements IRebService {
                 for (Element tr : trs) {
                     // 只获取有效数据的值
                     if (tr.select("td").size() > 1) {
-                        rebList.add(analysisRebDataByElement(tr));
+                        // 抓取详细信息
+                        rebList.add(getRebDetailsByElement(tr));
                     }
                 }
                 LogFile.writerLogFile(spiderLogPath, "info", "抓取第"+fdcUrlPageNumer+"页房产商全部数据完成!");
@@ -71,10 +72,10 @@ public class RebServiceImpl implements IRebService {
     }
 
     /**
-     * 根据抓取的数据解析出每个房产商的数据
+     * 根据抓取的数据获取每个房产商的详情数据
      */
     @Override
-    public TReb analysisRebDataByElement(Element tr) {
+    public TReb getRebDetailsByElement(Element tr) {
 
         TReb reb = new TReb();
 
@@ -124,6 +125,12 @@ public class RebServiceImpl implements IRebService {
         reb.setRegisteredCapital(registeredCapital);
         reb.setType(type);
         reb.setIntroduction(introduction);
+
+        try {
+            LogFile.writerLogFile(spiderLogPath, "info", "抓取房产商["+name+"]详细数据完成!");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
 
         return reb;
     }

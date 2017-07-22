@@ -1,8 +1,11 @@
 package com.spider;
 
+import com.spider.model.TReb;
 import com.spider.service.impl.HousesServiceImpl;
+import com.spider.service.impl.RebServiceImpl;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by zhangyan on 17/7/16.
@@ -22,7 +25,9 @@ public class Main {
 //        System.out.print(housesService.getTop5Houses());
 
 //        RebServiceImpl rebService = new RebServiceImpl();
-//        System.out.print(rebService.getAllReb());
+//        List<TReb> allReb = rebService.getAllReb();
+//
+//        System.out.print(allReb);
 
         HousesServiceImpl housesService = new HousesServiceImpl();
         System.out.print(housesService.getAllHouses());

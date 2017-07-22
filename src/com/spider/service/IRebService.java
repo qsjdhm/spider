@@ -17,7 +17,7 @@ public interface IRebService {
     public List<TReb> getAllReb();
 
     /**
-     * 根据抓取的数据解析出每个房产商的数据
+     * 根据抓取的数据获取每个房产商的详情数据
      */
-    public TReb analysisRebDataByElement(Element tr);
+    public TReb getRebDetailsByElement(Element tr);
 }

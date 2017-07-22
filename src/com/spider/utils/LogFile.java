@@ -23,6 +23,9 @@ public class LogFile {
         PrintWriter logPrint = null;
         String path = LogFile.class.getResource("/").getPath() + logPath + date + ".log";
 
+        // 处理文件夹有中文和空格的情况
+        path = java.net.URLDecoder.decode(path, "utf-8");
+
         File logFile = new File(path);
         if (logFile.exists()) {
             writerContent(path, "["+type+"] " + "[" +detailsDate+"] " + msg);

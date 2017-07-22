@@ -1,5 +1,7 @@
 package com.spider.model;
 
+import java.util.UUID;
+
 /**
  * Created by zhangyan on 17/7/19.
  * 楼盘原型
@@ -10,19 +12,22 @@ public class THouses {
 
     }
 
-    private String housesId = null;  // 楼盘ID
+    private UUID housesId = null;  // 楼盘ID
     private String housesName = null;  // 楼盘名称
     private String sfwUrl = null;  // 搜房网URL
+    private String cover = null;  // 封面
     private String address = null;  // 地址
+    private String averagePrice = null;  // 均价
+    private String openingDate = null;  // 开盘日期
     private String pRebId = null;  // 所属房产商ID
     private String pRebName = null;  // 所属房产商名称
 
 
-    public String getHousesId() {
+    public UUID getHousesId() {
         return housesId;
     }
 
-    public void setHousesId(String housesId) {
+    public void setHousesId(UUID housesId) {
         this.housesId = housesId;
     }
 
@@ -42,12 +47,36 @@ public class THouses {
         this.sfwUrl = sfwUrl;
     }
 
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getAveragePrice() {
+        return averagePrice;
+    }
+
+    public void setAveragePrice(String averagePrice) {
+        this.averagePrice = averagePrice;
+    }
+
+    public String getOpeningDate() {
+        return openingDate;
+    }
+
+    public void setOpeningDate(String openingDate) {
+        this.openingDate = openingDate;
     }
 
     public String getpRebId() {
