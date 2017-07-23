@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,15 +27,19 @@ public class FloorServiceImpl implements IFloorService {
     // 爬虫进度的日志目录路径
     private String spiderLogPath = "log" + File.separator + "spider_schedule" + File.separator;
 
+
+
     /**
+     * 处理根据楼盘列表调取获取每个楼盘的地块列表逻辑
+     *
      * 根据全部的楼盘名称从政府网获取它的地块列表
      */
     @Override
-    public void getFloorListByAllHouses(List<THouses> housesList) {
+    public HashMap<String, Object> getFloorListByAllHouses(List<THouses> housesList) {
 
         ArrayList<TFloor> allFloorList = new ArrayList<TFloor>();
-        ArrayList<TPlots> allPlotsList = new ArrayList<TPlots>();
 
+        // 组织所有地块数据
         for (THouses houses : housesList) {
             // 根据每个楼盘信息获取它的地块数据
             ArrayList<TFloor> housesFloorList = getFloorListByHouses(houses);
@@ -46,16 +51,24 @@ public class FloorServiceImpl implements IFloorService {
         }
 
 
-        for (THouses houses : housesList) {
-            System.out.println("---------");
-            System.out.println(houses.getpRebName());
-        }
+        // 组织所有单元楼数据
+        PlotsServiceImpl plotsService = new PlotsServiceImpl();
 
-        //return allFloorList;
+
+        // 组织下数据返回格式
+        HashMap<String, Object> returnValue = new HashMap<String, Object>();
+        // 将获取的所有地块数据放入map中
+        returnValue.put("allFloorList", allFloorList);
+        // 将获取的所有单元楼数据放入map中
+        returnValue.put("allPlotsList", plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList"));
+
+        return returnValue;
 
     }
 
     /**
+     * 处理根据单个楼盘获取地块列表数据，并调取下潜到地块详情的逻辑
+     *
      * 根据楼盘从政府网获取它的地块列表
      */
     @Override
@@ -68,7 +81,7 @@ public class FloorServiceImpl implements IFloorService {
         try {
             do {
 
-                pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/onsaling/index_"+sfwUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=").get();
+                pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/onsaling/index_"+sfwUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=").timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
 
 
@@ -87,6 +100,7 @@ public class FloorServiceImpl implements IFloorService {
                 }
                 sfwUrlPageNumer++;
             } while (pageDoc != null);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,6 +109,8 @@ public class FloorServiceImpl implements IFloorService {
     }
 
     /**
+     * 处理根据抓取每个地块详情数据
+     *
      * 根据抓取的地块数据获取单个地块详细数据，包括单元楼
      */
     @Override
@@ -116,11 +132,10 @@ public class FloorServiceImpl implements IFloorService {
         String pRebId = null;  // 所属房产商ID
         String pRebName = null;  // 所属房产商名称
 
-
         // 根据url继续下潜抓取详细信息
         Document detailedDoc = null;  // 承载抓取到的房产商详细数据
         try {
-            detailedDoc = Jsoup.connect(fdcUrl).get();
+            detailedDoc = Jsoup.connect(fdcUrl).timeout(5000).get();
             Elements trs = detailedDoc.select(".message_table tr");
 
             pRebName = trs.eq(2).select("td").eq(1).text();
@@ -154,10 +169,13 @@ public class FloorServiceImpl implements IFloorService {
         floor.setpRebName(pRebName);
 
 
-        // 处理单元楼业务
-        PlotsServiceImpl plotsService = new PlotsServiceImpl();
-        plotsService.getPlotsListByFloor(floor);
-
+//        // 处理单元楼业务
+//        PlotsServiceImpl plotsService = new PlotsServiceImpl();
+//        ArrayList<TPlots> floorPlotsList = plotsService.getPlotsListByFloor(floor);
+//        // 再把每个楼盘的地块遍历出来放到全部地块数组中
+//        for (TPlots floorPlots : floorPlotsList) {
+//            allPlotsList.add(floorPlots);
+//        }
 
         return floor;
     }

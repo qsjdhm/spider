@@ -36,7 +36,7 @@ public class RebServiceImpl implements IRebService {
         try {
             do {
                 LogFile.writerLogFile(spiderLogPath, "info", "抓取第"+fdcUrlPageNumer+"页房产商全部数据开始...");
-                pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/kfqy/index_"+fdcUrlPageNumer+".shtml").get();
+                pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/kfqy/index_"+fdcUrlPageNumer+".shtml").timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
 
                 // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式
@@ -95,7 +95,7 @@ public class RebServiceImpl implements IRebService {
         // 根据url继续下潜抓取详细信息
         Document detailedDoc = null;  // 承载抓取到的房产商详细数据
         try {
-            detailedDoc = Jsoup.connect(spiderUrl).get();
+            detailedDoc = Jsoup.connect(spiderUrl).timeout(5000).get();
             Elements trs = detailedDoc.select(".message_table tr");
 
             address = trs.eq(1).select("td").eq(1).text();

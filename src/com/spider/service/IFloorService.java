@@ -5,6 +5,7 @@ import com.spider.model.THouses;
 import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,9 +16,9 @@ import java.util.UUID;
 public interface IFloorService {
 
     /**
-     * 根据全部的楼盘名称从政府网获取它的地块列表
+     * 根据全部的楼盘从政府网获取它们的地块列表
      */
-    public void getFloorListByAllHouses(List<THouses> housesList);
+    public HashMap<String, Object> getFloorListByAllHouses(List<THouses> housesList);
 
     /**
      * 根据楼盘从政府网获取它的地块列表

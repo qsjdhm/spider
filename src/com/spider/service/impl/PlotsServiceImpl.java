@@ -1,7 +1,6 @@
 package com.spider.service.impl;
 
 import com.spider.model.TFloor;
-import com.spider.model.THouses;
 import com.spider.model.TPlots;
 import com.spider.service.IPlotsService;
 import com.spider.utils.LogFile;
@@ -12,9 +11,7 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by zhangyan on 17/7/16.
@@ -26,10 +23,36 @@ public class PlotsServiceImpl implements IPlotsService {
     private String spiderLogPath = "log" + File.separator + "spider_schedule" + File.separator;
 
     /**
+     * 根据全部的地块从政府网获取它们的单元楼列表
+     */
+    @Override
+    public HashMap<String, Object> getPlotsListByAllFloor(List<TFloor> floorList) {
+
+        ArrayList<TPlots> allPlotsList = new ArrayList<TPlots>();
+
+        for (TFloor floor : floorList) {
+            // 根据每个地块信息获取它的单元楼数据
+            ArrayList<TPlots> floorPlotsList = getPlotsListByFloor(floor);
+
+            // 再把每个地块的单元楼遍历出来放到全部单元楼数组中
+            for (TPlots floorPlots : floorPlotsList) {
+                allPlotsList.add(floorPlots);
+            }
+        }
+
+        // 组织下数据返回格式
+        HashMap<String, Object> returnValue = new HashMap<String, Object>();
+        returnValue.put("allPlotsList", allPlotsList);
+
+        return returnValue;
+    }
+
+
+    /**
      * 根据地块详情获取它的单元楼列表
      */
     @Override
-    public List<TPlots> getPlotsListByFloor(TFloor floor) {
+    public ArrayList<TPlots> getPlotsListByFloor(TFloor floor) {
 
         ArrayList<TPlots> plotsList = new ArrayList<TPlots>();  // 承载单元楼数据集合
         int sfwUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
@@ -39,7 +62,7 @@ public class PlotsServiceImpl implements IPlotsService {
 
             do {
                 String url = floor.getFdcUrl().replace("show", "show_"+sfwUrlPageNumer);
-                pageDoc = Jsoup.connect(url).get();
+                pageDoc = Jsoup.connect(url).timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
 
                 // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式
@@ -60,10 +83,6 @@ public class PlotsServiceImpl implements IPlotsService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println("==============");
-        System.out.println(floor.getFloorName());
-        System.out.println(plotsList.size());
 
         return plotsList;
     }
@@ -98,7 +117,7 @@ public class PlotsServiceImpl implements IPlotsService {
         // 根据url继续下潜抓取详细信息
         Document detailedDoc = null;  // 承载抓取到的房产商详细数据
         try {
-            detailedDoc = Jsoup.connect(fdcUrl).get();
+            detailedDoc = Jsoup.connect(fdcUrl).timeout(5000).get();
             Elements trs = detailedDoc.select(".message_table tr");
 
             area = trs.eq(4).select("td").eq(3).text()+"(万m²)";  // 建筑面积

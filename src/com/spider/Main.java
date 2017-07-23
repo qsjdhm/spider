@@ -30,7 +30,8 @@ public class Main {
 //        System.out.print(allReb);
 
         HousesServiceImpl housesService = new HousesServiceImpl();
-        System.out.print(housesService.getAllHouses());
+        System.out.print("===========");
+        System.out.print(housesService.getAllHouses().get("allHousesList"));
 
     }
 }
