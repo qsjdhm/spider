@@ -1,5 +1,6 @@
 package com.spider.service.impl;
 
+import com.spider.config.Constant;
 import com.spider.model.TFloor;
 import com.spider.model.TPlots;
 import com.spider.service.IPlotsService;
@@ -18,9 +19,6 @@ import java.util.*;
  * 单元楼业务功能类
  */
 public class PlotsServiceImpl implements IPlotsService {
-
-    // 爬虫进度的日志目录路径
-    private String spiderLogPath = "log" + File.separator + "spider_schedule" + File.separator;
 
     /**
      * 根据全部的地块从政府网获取它们的单元楼列表
@@ -55,13 +53,12 @@ public class PlotsServiceImpl implements IPlotsService {
     public ArrayList<TPlots> getPlotsListByFloor(TFloor floor) {
 
         ArrayList<TPlots> plotsList = new ArrayList<TPlots>();  // 承载单元楼数据集合
-        int sfwUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
+        int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         Document pageDoc = null;  // 承载抓取到的每页单元楼数据
 
         try {
-
             do {
-                String url = floor.getFdcUrl().replace("show", "show_"+sfwUrlPageNumer);
+                String url = floor.getFdcUrl().replace("show", "show_"+fdcUrlPageNumer);
                 pageDoc = Jsoup.connect(url).timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
 
@@ -78,7 +75,10 @@ public class PlotsServiceImpl implements IPlotsService {
                 if (trs.size() <= 2) {
                     pageDoc = null;
                 }
-                sfwUrlPageNumer++;
+
+                LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取政府网地块["+floor.getFloorName()+"]的>>>>>>全部单元楼第"+fdcUrlPageNumer+"页数据完成");
+
+                fdcUrlPageNumer++;
             } while (pageDoc != null);
         } catch (IOException e) {
             e.printStackTrace();
@@ -129,13 +129,9 @@ public class PlotsServiceImpl implements IPlotsService {
             planningPermit = trs.eq(8).select("td").eq(1).text();  // 建设工程规划许可证
             constructionPermit = trs.eq(8).select("td").eq(3).text();  // 建设工程施工许可证
 
-            LogFile.writerLogFile(spiderLogPath, "info", "抓取单元楼["+plotsName+"]详细数据完成!");
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[单元楼]   楼盘["+pHousesName+"]>>>>>>地块["+pFloorName+"]>>>>>>单元楼["+plotsName+"]详细数据完成!");
         } catch (IOException e) {
-            try {
-                LogFile.writerLogFile(spiderLogPath, "error", "抓取单元楼详细数据异常："+e);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[单元楼]   楼盘["+pHousesName+"]>>>>>>地块["+pFloorName+"]>>>>>>单元楼["+plotsName+"]详细数据异常："+e);
             e.printStackTrace();
         }
 

@@ -1,5 +1,6 @@
 package com.spider.service.impl;
 
+import com.spider.config.Constant;
 import com.spider.model.TFloor;
 import com.spider.model.THouses;
 import com.spider.model.TPlots;
@@ -23,11 +24,6 @@ import java.util.UUID;
  * 地块业务功能类
  */
 public class FloorServiceImpl implements IFloorService {
-
-    // 爬虫进度的日志目录路径
-    private String spiderLogPath = "log" + File.separator + "spider_schedule" + File.separator;
-
-
 
     /**
      * 处理根据楼盘列表调取获取每个楼盘的地块列表逻辑
@@ -75,15 +71,13 @@ public class FloorServiceImpl implements IFloorService {
     public ArrayList<TFloor> getFloorListByHouses(THouses houses) {
 
         ArrayList<TFloor> floorList = new ArrayList<TFloor>();  // 承载地块数据集合
-        int sfwUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
+        int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         Document pageDoc = null;  // 承载抓取到的每页地块数据
 
         try {
             do {
-
-                pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/onsaling/index_"+sfwUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=").timeout(5000).get();
+                pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=").timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
-
 
                 // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式
                 for (Element tr : trs) {
@@ -98,9 +92,11 @@ public class FloorServiceImpl implements IFloorService {
                 if (trs.size() <= 2) {
                     pageDoc = null;
                 }
-                sfwUrlPageNumer++;
-            } while (pageDoc != null);
 
+                LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取政府网楼盘["+houses.getHousesName()+"]的>>>>>>全部地块第"+fdcUrlPageNumer+"页数据完成");
+
+                fdcUrlPageNumer++;
+            } while (pageDoc != null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -145,13 +141,9 @@ public class FloorServiceImpl implements IFloorService {
             property = trs.eq(5).select("td").eq(1).text();
 
             houses.setpRebName(pRebName);
-            LogFile.writerLogFile(spiderLogPath, "info", "抓取地块["+floorName+"]详细数据完成!");
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据完成!");
         } catch (IOException e) {
-            try {
-                LogFile.writerLogFile(spiderLogPath, "error", "抓取地块详细数据异常："+e);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据异常："+e);
             e.printStackTrace();
         }
 
@@ -167,15 +159,6 @@ public class FloorServiceImpl implements IFloorService {
         floor.setpHousesId(pHousesId);
         floor.setpHousesName(pHousesName);
         floor.setpRebName(pRebName);
-
-
-//        // 处理单元楼业务
-//        PlotsServiceImpl plotsService = new PlotsServiceImpl();
-//        ArrayList<TPlots> floorPlotsList = plotsService.getPlotsListByFloor(floor);
-//        // 再把每个楼盘的地块遍历出来放到全部地块数组中
-//        for (TPlots floorPlots : floorPlotsList) {
-//            allPlotsList.add(floorPlots);
-//        }
 
         return floor;
     }

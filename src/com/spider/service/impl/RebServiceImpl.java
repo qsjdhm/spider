@@ -1,5 +1,6 @@
 package com.spider.service.impl;
 
+import com.spider.config.Constant;
 import com.spider.model.TReb;
 import com.spider.service.IRebService;
 import com.spider.utils.LogFile;
@@ -20,9 +21,6 @@ import java.util.UUID;
  */
 public class RebServiceImpl implements IRebService {
 
-    // 爬虫进度的日志目录路径
-    private String spiderLogPath = "log" + File.separator + "spider_schedule" + File.separator;
-
     /**
      * 从政府网获取所有房产商数据
      */
@@ -35,7 +33,6 @@ public class RebServiceImpl implements IRebService {
 
         try {
             do {
-                LogFile.writerLogFile(spiderLogPath, "info", "抓取第"+fdcUrlPageNumer+"页房产商全部数据开始...");
                 pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/kfqy/index_"+fdcUrlPageNumer+".shtml").timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
 
@@ -47,27 +44,22 @@ public class RebServiceImpl implements IRebService {
                         rebList.add(getRebDetailsByElement(tr));
                     }
                 }
-                LogFile.writerLogFile(spiderLogPath, "info", "抓取第"+fdcUrlPageNumer+"页房产商全部数据完成!");
 
                 // 如果获取的td是空数据  就设置pageDoc为null
                 if (trs.size() <= 2) {
                     pageDoc = null;
                 }
+
+                LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取政府网第"+fdcUrlPageNumer+"页房产商数据完成");
+
                 fdcUrlPageNumer++;
             } while (pageDoc != null);
         } catch (IOException e) {
-            try {
-                LogFile.writerLogFile(spiderLogPath, "error", "抓取房产商全部数据异常："+e);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取政府网第"+fdcUrlPageNumer+"页房产商数据异常："+e);
             e.printStackTrace();
         }
-        try {
-            LogFile.writerLogFile(spiderLogPath, "info", "共抓取"+rebList.size()+"条房产商数据!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "----------------------------------");
+        LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "共抓取"+rebList.size()+"条房产商数据!");
         return rebList;
     }
 
@@ -105,13 +97,9 @@ public class RebServiceImpl implements IRebService {
             type = trs.eq(6).select("td").eq(1).text();  // 企业类型
             introduction = trs.eq(7).select("td").eq(1).text();  // 企业简介
 
-            LogFile.writerLogFile(spiderLogPath, "info", "抓取房产商["+name+"]详细数据完成!");
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取房产商["+name+"]详细数据完成!");
         } catch (IOException e) {
-            try {
-                LogFile.writerLogFile(spiderLogPath, "error", "抓取房产商详细数据异常："+e);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取房产商["+name+"]详细数据异常："+e);
             e.printStackTrace();
         }
 

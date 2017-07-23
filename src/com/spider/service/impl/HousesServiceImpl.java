@@ -1,5 +1,6 @@
 package com.spider.service.impl;
 
+import com.spider.config.Constant;
 import com.spider.model.TFloor;
 import com.spider.model.THouses;
 import com.spider.model.TPlots;
@@ -24,9 +25,6 @@ import java.util.UUID;
  */
 public class HousesServiceImpl implements IHousesService {
 
-    // 爬虫进度的日志目录路径
-    private String spiderLogPath = "log" + File.separator + "spider_schedule" + File.separator;
-
     /**
      * 从搜房网获取全部楼盘数据
      */
@@ -48,6 +46,8 @@ public class HousesServiceImpl implements IHousesService {
                 // 抓取详细信息
                 allHousesList.add(getHousesDetailsByElement(li));
             }
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取搜房网第"+sfwUrlPageNumer+"页楼盘数据完成");
+
 
             // 获取所有搜房网楼盘列表
 //            do {
@@ -63,10 +63,13 @@ public class HousesServiceImpl implements IHousesService {
 //                if (lis.size() == 0) {
 //                    pageDoc = null;
 //                }
+//
+//                LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取搜房网第"+sfwUrlPageNumer+"页楼盘数据完成");
+//
 //                sfwUrlPageNumer++;
 //            } while (pageDoc != null);
-
         } catch (IOException e) {
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取搜房网第"+sfwUrlPageNumer+"页楼盘数据异常："+e);
             e.printStackTrace();
         }
 
@@ -154,13 +157,9 @@ public class HousesServiceImpl implements IHousesService {
             averagePrice = detailedDoc.select(".prib").text();
             openingDate = detailedDoc.select(".kaipan").text();
 
-            LogFile.writerLogFile(spiderLogPath, "info", "抓取楼盘["+name+"]详细数据完成!");
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[楼盘]   ["+name+"]详细数据完成!");
         } catch (IOException e) {
-            try {
-                LogFile.writerLogFile(spiderLogPath, "error", "抓取楼盘详细数据异常："+e);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[楼盘]   ["+name+"]详细数据异常："+e);
             e.printStackTrace();
         }
 

@@ -1,9 +1,6 @@
 package com.spider.utils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,15 +13,18 @@ public class LogFile {
     /**
      * 接收参数，向每一天的日志文件写内容
      */
-    public static void writerLogFile(String logPath, String type, String msg) throws IOException {
+    public static void writerLogFile(String logPath, String type, String msg) {
 
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String detailsDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        PrintWriter logPrint = null;
         String path = LogFile.class.getResource("/").getPath() + logPath + date + ".log";
 
         // 处理文件夹有中文和空格的情况
-        path = java.net.URLDecoder.decode(path, "utf-8");
+        try {
+            path = java.net.URLDecoder.decode(path, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         File logFile = new File(path);
         if (logFile.exists()) {
@@ -32,9 +32,9 @@ public class LogFile {
         } else {
             try {
                 logFile.createNewFile();
-                writerContent(path, "["+type+"]   " + msg);
+                writerContent(path, "["+type+"] " + "[" +detailsDate+"] " + msg);
             } catch (IOException e) {
-                System.out.println("创建文件出错");
+                System.out.println("创建文件"+logPath + date + ".log出错：" + e);
                 e.printStackTrace();
             }
         }
@@ -43,11 +43,17 @@ public class LogFile {
     /**
      * 向文件写数据
      */
-    public static void writerContent (String filePath, String content) throws IOException {
+    public static void writerContent (String filePath, String content) {
         // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-        FileWriter writer = new FileWriter(filePath, true);
-        writer.write(content += "\r\n");
-        writer.close();
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(filePath, true);
+            writer.write(content += "\r\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println(filePath + "写入文件内容出错：" + e);
+            e.printStackTrace();
+        }
     }
 
 }
