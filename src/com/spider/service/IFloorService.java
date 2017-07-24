@@ -16,17 +16,18 @@ import java.util.UUID;
 public interface IFloorService {
 
     /**
-     * 根据全部的楼盘从政府网获取它们的地块列表
+     * 根据搜房网全部楼盘列表遍历每个楼盘数据，并且根据每个楼盘数据下潜获取此楼盘的地块列表数据（包括地块详情）
+     * 在获得地块列表数据后，再根据地块列表获取单元楼列表数据（包括单元楼详情）
      */
     public HashMap<String, Object> getFloorListByAllHouses(List<THouses> housesList);
 
     /**
-     * 根据楼盘从政府网获取它的地块列表
+     * 根据楼盘从政府网抓取此楼盘的地块列表数据，并调用获取地块详情方法
      */
     public ArrayList<TFloor> getFloorListByHouses(THouses houses);
 
     /**
-     * 根据抓取的地块数据获取单个地块详细数据，包括单元楼
+     * 根据从政府网抓取的每一条地块数据下潜获取地块的详情数据
      */
     public TFloor getFloorDetailsByElement(Element tr, THouses houses);
 

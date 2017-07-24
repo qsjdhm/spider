@@ -64,7 +64,7 @@ public class RebServiceImpl implements IRebService {
     }
 
     /**
-     * 根据抓取的数据获取每个房产商的详情数据
+     * 根据从政府网抓取的每一条房产商数据下潜获取房产商的详情数据
      */
     @Override
     public TReb getRebDetailsByElement(Element tr) {

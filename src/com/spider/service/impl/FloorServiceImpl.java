@@ -26,9 +26,8 @@ import java.util.UUID;
 public class FloorServiceImpl implements IFloorService {
 
     /**
-     * 处理根据楼盘列表调取获取每个楼盘的地块列表逻辑
-     *
-     * 根据全部的楼盘名称从政府网获取它的地块列表
+     * 根据搜房网全部楼盘列表遍历每个楼盘数据，并且根据每个楼盘数据下潜获取此楼盘的地块列表数据（包括地块详情）
+     * 在获得地块列表数据后，再根据地块列表获取单元楼列表数据（包括单元楼详情）
      */
     @Override
     public HashMap<String, Object> getFloorListByAllHouses(List<THouses> housesList) {
@@ -49,23 +48,21 @@ public class FloorServiceImpl implements IFloorService {
 
         // 组织所有单元楼数据
         PlotsServiceImpl plotsService = new PlotsServiceImpl();
-
+        ArrayList<TPlots> allPlotsList = (ArrayList<TPlots>) plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList");
 
         // 组织下数据返回格式
         HashMap<String, Object> returnValue = new HashMap<String, Object>();
         // 将获取的所有地块数据放入map中
         returnValue.put("allFloorList", allFloorList);
         // 将获取的所有单元楼数据放入map中
-        returnValue.put("allPlotsList", plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList"));
+        returnValue.put("allPlotsList", allPlotsList);
 
         return returnValue;
 
     }
 
     /**
-     * 处理根据单个楼盘获取地块列表数据，并调取下潜到地块详情的逻辑
-     *
-     * 根据楼盘从政府网获取它的地块列表
+     * 根据楼盘从政府网抓取此楼盘的地块列表数据，并调用获取地块详情方法
      */
     @Override
     public ArrayList<TFloor> getFloorListByHouses(THouses houses) {
@@ -105,9 +102,7 @@ public class FloorServiceImpl implements IFloorService {
     }
 
     /**
-     * 处理根据抓取每个地块详情数据
-     *
-     * 根据抓取的地块数据获取单个地块详细数据，包括单元楼
+     * 根据从政府网抓取的每一条地块数据下潜获取地块的详情数据
      */
     @Override
     public TFloor getFloorDetailsByElement(Element tr, THouses houses) {

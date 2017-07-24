@@ -13,12 +13,12 @@ import java.util.List;
 public interface IHousesService {
 
     /**
-     * 从搜房网获取全部楼盘数据,包含楼盘、地块、单元楼数据
+     * 从搜房网获取全部楼盘数据,包含全部的楼盘、全部的地块、全部的单元楼数据
      */
     public HashMap<String, Object> getAllHouses();
 
     /**
-     * 根据抓取的数据获取每个楼盘的详情数据
+     * 根据从搜房网抓取的每一条楼盘数据下潜获取楼盘的详情数据
      */
     public THouses getHousesDetailsByElement(Element li);
 

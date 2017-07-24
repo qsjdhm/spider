@@ -14,17 +14,17 @@ import java.util.List;
 public interface IPlotsService {
 
     /**
-     * 根据全部的地块从政府网获取它们的单元楼列表
+     * 根据全部的地块列表遍历每个地块数据，并且根据每个地块数据下潜获取此地块的单元楼列表数据（包括单元楼详情）
      */
     public HashMap<String, Object> getPlotsListByAllFloor(List<TFloor> floorList);
 
     /**
-     * 根据地块获取它的单元楼列表
+     * 根据地块从政府网抓取此地块的单元楼列表数据，并调用获取单元楼详情方法
      */
     public List<TPlots> getPlotsListByFloor(TFloor floor);
 
     /**
-     * 根据抓取的单元楼详细数据获取单个单元楼详细数据
+     * 根据从政府网抓取的每一条单元楼数据下潜获取单元楼的详情数据
      */
     public TPlots getPlotsDetailsByElement(Element tr, TFloor floor);
 
