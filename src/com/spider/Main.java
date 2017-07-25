@@ -24,14 +24,13 @@ public class Main {
 //        HousesServiceImpl housesService = new HousesServiceImpl();
 //        System.out.print(housesService.getTop5Houses());
 
-//        RebServiceImpl rebService = new RebServiceImpl();
-//        List<TReb> allReb = rebService.getAllReb();
-//
-//        System.out.print(allReb);
+        RebServiceImpl rebService = new RebServiceImpl();
+        List<TReb> allReb = rebService.getAllReb();
+        //System.out.print(allReb);
 
-        HousesServiceImpl housesService = new HousesServiceImpl();
-        System.out.print("===========");
-        System.out.print(housesService.getAllHouses().get("allHousesList"));
+//        HousesServiceImpl housesService = new HousesServiceImpl();
+//        System.out.print("===========");
+//        System.out.print(housesService.getAllHouses().get("allHousesList"));
 
     }
 }
