@@ -1,8 +1,8 @@
 package com.spider.service.impl;
 
 import com.spider.config.Constant;
-import com.spider.model.TFloor;
-import com.spider.model.TPlots;
+import com.spider.entity.TFloor;
+import com.spider.entity.TPlots;
 import com.spider.service.IPlotsService;
 import com.spider.utils.LogFile;
 import org.jsoup.Jsoup;

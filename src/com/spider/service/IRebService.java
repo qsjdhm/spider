@@ -1,6 +1,6 @@
 package com.spider.service;
 
-import com.spider.model.TReb;
+import com.spider.entity.TReb;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 

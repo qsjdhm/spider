@@ -1,4 +1,4 @@
-package com.spider.model;
+package com.spider.entity;
 
 import java.util.UUID;
 

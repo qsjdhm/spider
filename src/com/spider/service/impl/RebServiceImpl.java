@@ -1,8 +1,7 @@
 package com.spider.service.impl;
 
 import com.spider.config.Constant;
-import com.spider.model.TReb;
-import com.spider.model.TSpiderError;
+import com.spider.entity.TReb;
 import com.spider.service.IRebService;
 import com.spider.utils.LogFile;
 import org.jsoup.Jsoup;
@@ -25,12 +24,6 @@ public class RebServiceImpl implements IRebService {
      */
     @Override
     public List<TReb> getAllReb () {
-
-        Map<String, String> err = new HashMap<String, String>() {};
-        err.put("名称", "zhangsa");
-
-        TSpiderError.addError(err);
-
         ArrayList<TReb> rebList = new ArrayList<TReb>();  // 承载房产商数据集合
         int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         Document pageDoc = null;  // 承载抓取到的每页房产商数据
@@ -64,16 +57,6 @@ public class RebServiceImpl implements IRebService {
         }
         LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "----------------------------------");
         LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "共抓取"+rebList.size()+"条房产商数据!");
-
-
-        List<Map<String, String>> errorList = TSpiderError.getErrorList(true);
-
-        for (Map<String, String> m : errorList) {
-            for (String k : m.keySet()) {
-                System.out.println(k + " : " + m.get(k));
-            }
-
-        }
 
         return rebList;
     }

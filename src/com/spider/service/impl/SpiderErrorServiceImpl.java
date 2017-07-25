@@ -1,20 +1,12 @@
-package com.spider.model;
+package com.spider.service.impl;
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Created by zhangyan on 17/7/25.
- * 用于存放抓取搜房网、政府网数据过程中的异常错误
- * 在方法调用的时候会将这些错误返回给调用方
+ * Created by zhangyan on 2017/7/25.
+ * 处理爬虫错误业务功能
  */
-public class TSpiderError {
-
-    public TSpiderError () {
-
-    }
+public class SpiderErrorServiceImpl {
 
     // 错误列表
     private static List<Map<String, String>> errorList = new ArrayList<Map<String, String>>();
@@ -23,7 +15,12 @@ public class TSpiderError {
     /**
      * 外部会逐条往errorList添加错误信息
      */
-    public static void addError(Map<String, String> error) {
+    public static void addError(String type, String name, String url, String content) {
+        Map<String, String> error = new HashMap<String, String>();
+        error.put("type", type);
+        error.put("name", name);
+        error.put("url", url);
+        error.put("content", content);
         errorList.add(error);
     }
 
@@ -33,7 +30,7 @@ public class TSpiderError {
      */
     public static List<Map<String, String>> getErrorList(boolean isClear) {
         if (isClear) {
-            List<Map<String, String>> tempErrorList = new ArrayList<Map<String, String>>(TSpiderError.errorList);
+            List<Map<String, String>> tempErrorList = new ArrayList<Map<String, String>>(errorList);
             return tempErrorList;
         } else {
             return errorList;
@@ -44,8 +41,8 @@ public class TSpiderError {
      * 清空错误列表
      */
     public static void clearErrorList() {
-        TSpiderError.errorList.clear();
+        errorList.clear();
     }
 
-}
 
+}

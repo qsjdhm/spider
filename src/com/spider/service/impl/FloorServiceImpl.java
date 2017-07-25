@@ -1,10 +1,10 @@
 package com.spider.service.impl;
 
 import com.spider.config.Constant;
-import com.spider.model.TFloor;
-import com.spider.model.THouses;
-import com.spider.model.TPlots;
-import com.spider.model.TReb;
+import com.spider.entity.TFloor;
+import com.spider.entity.THouses;
+import com.spider.entity.TPlots;
+import com.spider.entity.TReb;
 import com.spider.service.IFloorService;
 import com.spider.utils.LogFile;
 import org.jsoup.Jsoup;
@@ -95,6 +95,10 @@ public class FloorServiceImpl implements IFloorService {
                 fdcUrlPageNumer++;
             } while (pageDoc != null);
         } catch (IOException e) {
+
+            // 组织错误信息，供返回使用
+            SpiderErrorServiceImpl.addError("分页地块", "第"+fdcUrlPageNumer+"页", "http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=", "抓取[地块]   楼盘["+houses.getFdcHousesName()+"]>>>>>>地块第"+fdcUrlPageNumer+"页数据异常："+e);
+
             e.printStackTrace();
         }
 
@@ -138,6 +142,9 @@ public class FloorServiceImpl implements IFloorService {
             houses.setpRebName(pRebName);
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据完成!");
         } catch (IOException e) {
+            // 组织错误信息，供返回使用
+            SpiderErrorServiceImpl.addError("地块", floorName, fdcUrl, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据异常："+e);
+
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据异常："+e);
             e.printStackTrace();
         }

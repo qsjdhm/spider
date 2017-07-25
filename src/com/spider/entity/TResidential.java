@@ -1,4 +1,4 @@
-package com.spider.model;
+package com.spider.entity;
 
 /**
  * Created by zhangyan on 17/7/19.

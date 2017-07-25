@@ -1,7 +1,7 @@
 package com.spider.service;
 
-import com.spider.model.TFloor;
-import com.spider.model.TPlots;
+import com.spider.entity.TFloor;
+import com.spider.entity.TPlots;
 import org.jsoup.nodes.Element;
 
 import java.util.HashMap;

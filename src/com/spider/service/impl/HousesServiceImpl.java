@@ -1,9 +1,9 @@
 package com.spider.service.impl;
 
 import com.spider.config.Constant;
-import com.spider.model.TFloor;
-import com.spider.model.THouses;
-import com.spider.model.TPlots;
+import com.spider.entity.TFloor;
+import com.spider.entity.THouses;
+import com.spider.entity.TPlots;
 import com.spider.service.IHousesService;
 import com.spider.utils.AnalysisHouseUtil;
 import com.spider.utils.LogFile;
@@ -14,10 +14,7 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by zhangyan on 17/7/16.
@@ -72,6 +69,7 @@ public class HousesServiceImpl implements IHousesService {
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取搜房网第"+sfwUrlPageNumer+"页楼盘数据异常："+e);
             e.printStackTrace();
         }
+        //HashMap<String, Object> allData = new HashMap<String, Object>();
 
         /**
          * 跑真实数据这里要放开
@@ -102,6 +100,16 @@ public class HousesServiceImpl implements IHousesService {
         allData.put("allHousesList", tempHousesList);
         allData.put("allFloorList", floorAndPlotsData.get("allFloorList"));
         allData.put("allPlotsList", floorAndPlotsData.get("allPlotsList"));
+
+
+        List<Map<String, String>> errors = SpiderErrorServiceImpl.getErrorList(true);
+        for(Map<String, String> errorItem : errors) {
+            for(String k : errorItem.keySet()) {
+                System.out.println(k+":"+errorItem.get(k));
+                System.out.println("=======");
+            }
+        }
+
 
 
         System.out.println("00---------------------");
@@ -159,7 +167,12 @@ public class HousesServiceImpl implements IHousesService {
 
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[楼盘]   ["+name+"]详细数据完成!");
         } catch (IOException e) {
+            // 组织错误信息，供返回使用
+            SpiderErrorServiceImpl.addError("楼盘", name, sfwUrl, "抓取[楼盘]   ["+name+"]详细数据异常："+e);
+
+            // 错误信息写入到自己的日志中
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[楼盘]   ["+name+"]详细数据异常："+e);
+
             e.printStackTrace();
         }
 

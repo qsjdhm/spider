@@ -1,6 +1,6 @@
 package com.spider.service;
 
-import com.spider.model.THouses;
+import com.spider.entity.THouses;
 import org.jsoup.nodes.Element;
 
 import java.util.HashMap;
