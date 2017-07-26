@@ -1,15 +1,14 @@
-package com.spider.service.impl;
+package com.spider.service.impl.houses;
 
 import com.spider.config.Constant;
-import com.spider.entity.TReb;
-import com.spider.service.IRebService;
+import com.spider.entity.houses.TReb;
+import com.spider.service.houses.IRebService;
 import com.spider.utils.LogFile;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 

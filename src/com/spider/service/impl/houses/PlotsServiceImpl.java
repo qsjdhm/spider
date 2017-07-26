@@ -1,16 +1,15 @@
-package com.spider.service.impl;
+package com.spider.service.impl.houses;
 
 import com.spider.config.Constant;
-import com.spider.entity.TFloor;
-import com.spider.entity.TPlots;
-import com.spider.service.IPlotsService;
+import com.spider.entity.houses.TFloor;
+import com.spider.entity.houses.TPlots;
+import com.spider.service.houses.IPlotsService;
 import com.spider.utils.LogFile;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,7 +23,7 @@ public class PlotsServiceImpl implements IPlotsService {
      * 根据全部的地块列表遍历每个地块数据，并且根据每个地块数据下潜获取此地块的单元楼列表数据（包括单元楼详情）
      */
     @Override
-    public HashMap<String, Object> getPlotsListByAllFloor(List<TFloor> floorList) {
+    public HashMap<String, ArrayList> getPlotsListByAllFloor(List<TFloor> floorList) {
 
         ArrayList<TPlots> allPlotsList = new ArrayList<TPlots>();
 
@@ -40,7 +39,7 @@ public class PlotsServiceImpl implements IPlotsService {
 
 
         // 组织下数据返回格式
-        HashMap<String, Object> returnValue = new HashMap<String, Object>();
+        HashMap<String, ArrayList> returnValue = new HashMap<String, ArrayList>();
         returnValue.put("allPlotsList", allPlotsList);
 
         return returnValue;

@@ -1,7 +1,6 @@
-package com.spider.service;
+package com.spider.service.houses;
 
-import com.spider.entity.TReb;
-import org.jsoup.nodes.Document;
+import com.spider.entity.houses.TReb;
 import org.jsoup.nodes.Element;
 
 import java.util.List;

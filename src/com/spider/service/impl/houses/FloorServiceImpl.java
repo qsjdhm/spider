@@ -1,18 +1,17 @@
-package com.spider.service.impl;
+package com.spider.service.impl.houses;
 
 import com.spider.config.Constant;
-import com.spider.entity.TFloor;
-import com.spider.entity.THouses;
-import com.spider.entity.TPlots;
-import com.spider.entity.TReb;
-import com.spider.service.IFloorService;
+import com.spider.entity.houses.TFloor;
+import com.spider.entity.houses.THouses;
+import com.spider.entity.houses.TPlots;
+import com.spider.service.houses.IFloorService;
+import com.spider.service.impl.system.SpiderErrorServiceImpl;
 import com.spider.utils.LogFile;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ public class FloorServiceImpl implements IFloorService {
      * 在获得地块列表数据后，再根据地块列表获取单元楼列表数据（包括单元楼详情）
      */
     @Override
-    public HashMap<String, Object> getFloorListByAllHouses(List<THouses> housesList) {
+    public HashMap<String, ArrayList> getFloorListByAllHouses(List<THouses> housesList) {
 
         ArrayList<TFloor> allFloorList = new ArrayList<TFloor>();
 
@@ -48,10 +47,10 @@ public class FloorServiceImpl implements IFloorService {
 
         // 组织所有单元楼数据
         PlotsServiceImpl plotsService = new PlotsServiceImpl();
-        ArrayList<TPlots> allPlotsList = (ArrayList<TPlots>) plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList");
+        ArrayList<TPlots> allPlotsList = plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList");
 
         // 组织下数据返回格式
-        HashMap<String, Object> returnValue = new HashMap<String, Object>();
+        HashMap<String, ArrayList> returnValue = new HashMap<String, ArrayList>();
         // 将获取的所有地块数据放入map中
         returnValue.put("allFloorList", allFloorList);
         // 将获取的所有单元楼数据放入map中
@@ -71,9 +70,12 @@ public class FloorServiceImpl implements IFloorService {
         int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         Document pageDoc = null;  // 承载抓取到的每页地块数据
 
+        String url = "";
+
         try {
             do {
-                pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=").timeout(5000).get();
+                url = "http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=";
+                pageDoc = Jsoup.connect(url).timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
 
                 // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式

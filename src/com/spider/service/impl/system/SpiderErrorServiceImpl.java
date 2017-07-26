@@ -1,4 +1,4 @@
-package com.spider.service.impl;
+package com.spider.service.impl.system;
 
 import java.util.*;
 
@@ -26,15 +26,23 @@ public class SpiderErrorServiceImpl {
 
     /**
      * 外部获取全部的错误列表
+     */
+    public static List<Map<String, String>> getErrorList() {
+        return errorList;
+    }
+
+    /**
+     * 外部获取全部的错误列表
      * @param isClear 是否需要清除错误列表
      */
     public static List<Map<String, String>> getErrorList(boolean isClear) {
+        List<Map<String, String>> tempErrorList = new ArrayList<Map<String, String>>(errorList);
+
+        // 需要清空数据
         if (isClear) {
-            List<Map<String, String>> tempErrorList = new ArrayList<Map<String, String>>(errorList);
-            return tempErrorList;
-        } else {
-            return errorList;
+            clearErrorList();
         }
+        return tempErrorList;
     }
 
     /**

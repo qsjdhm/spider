@@ -1,11 +1,13 @@
 package com.spider;
 
-import com.spider.entity.TReb;
-import com.spider.service.impl.HousesServiceImpl;
-import com.spider.service.impl.RebServiceImpl;
+import com.spider.entity.houses.TFloor;
+import com.spider.entity.houses.THouses;
+import com.spider.entity.houses.TPlots;
+import com.spider.service.impl.houses.HousesServiceImpl;
+import com.spider.service.impl.system.SpiderErrorServiceImpl;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,16 +23,49 @@ public class Main {
 
         // 获取楼盘全部数据，包括地块、单元楼
         HousesServiceImpl housesService = new HousesServiceImpl();
-        System.out.println();
+
+        Map<String, ArrayList> allData = housesService.getAllHouses();
+        ArrayList<THouses> allHousesList = allData.get("allHousesList");
+        ArrayList<TFloor> allFloorList = allData.get("allFloorList");
+        ArrayList<TPlots> allPlotsList = allData.get("allPlotsList");
 
 
-        /**
-         * 这里要把Object换成List！！！！！
-         */
-        Map<String, Object> allData = housesService.getAllHouses();
-        Map<String, Object> allHousesList = (Map<String, Object>) allData.get("allHousesList");
-        Map<String, Object> allFloorList = (Map<String, Object>) allData.get("allFloorList");
-        Map<String, Object> allPlotsList = (Map<String, Object>) allData.get("allPlotsList");
+        // 抓取过程中的错误信息，为了再次更新错误楼盘
+        List<Map<String, String>> errors = SpiderErrorServiceImpl.getErrorList(true);
+        for(Map<String, String> errorItem : errors) {
+            for(String k : errorItem.keySet()) {
+                System.out.println(k+":"+errorItem.get(k));
+                System.out.println("=======");
+            }
+        }
+
+
+        System.out.println("00---------------------");
+        System.out.println("楼盘个数"+allHousesList.size());
+        System.out.println("楼盘名称");
+        for (THouses houses : allHousesList) {
+            System.out.println(houses.getHousesName());
+            System.out.println(houses.getpRebName());
+            System.out.println(houses.getAveragePrice());
+        }
+        System.out.println("11---------------------");
+        System.out.println("地块个数"+((ArrayList<TFloor>)allData.get("allFloorList")).size());
+        System.out.println("地块名称");
+        for (TFloor floor : (ArrayList<TFloor>)allData.get("allFloorList")) {
+            System.out.println(floor.getFloorName());
+            System.out.println(floor.getTotalPlotsNumber());
+            System.out.println(floor.getFdcUrl());
+            System.out.println(floor.getpHousesName());
+        }
+        System.out.println("22---------------------");
+        System.out.println("单元楼个数"+((ArrayList<TPlots>)allData.get("allPlotsList")).size());
+        System.out.println("单元楼名称");
+        for (TPlots plots : (ArrayList<TPlots>)allData.get("allPlotsList")) {
+            System.out.println(plots.getPlotsName());
+            System.out.println(plots.getMortgage());
+            System.out.println(plots.getFdcUrl());
+            System.out.println(plots.getpFloorName());
+        }
 
 
     }

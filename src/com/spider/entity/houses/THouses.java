@@ -1,4 +1,4 @@
-package com.spider.entity;
+package com.spider.entity.houses;
 
 import java.util.UUID;
 
