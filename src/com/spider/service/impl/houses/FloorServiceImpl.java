@@ -13,10 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by zhangyan on 17/7/16.
@@ -29,9 +26,9 @@ public class FloorServiceImpl implements IFloorService {
      * 在获得地块列表数据后，再根据地块列表获取单元楼列表数据（包括单元楼详情）
      */
     @Override
-    public HashMap<String, ArrayList> getFloorListByAllHouses(List<THouses> housesList) {
+    public Map<String, List> getFloorListByAllHouses(List<THouses> housesList) {
 
-        ArrayList<TFloor> allFloorList = new ArrayList<TFloor>();
+        List<TFloor> allFloorList = new ArrayList<TFloor>();
 
         // 组织所有地块数据
         for (THouses houses : housesList) {
@@ -47,10 +44,10 @@ public class FloorServiceImpl implements IFloorService {
 
         // 组织所有单元楼数据
         PlotsServiceImpl plotsService = new PlotsServiceImpl();
-        ArrayList<TPlots> allPlotsList = plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList");
+        List<TPlots> allPlotsList = plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList");
 
         // 组织下数据返回格式
-        HashMap<String, ArrayList> returnValue = new HashMap<String, ArrayList>();
+        Map<String, List> returnValue = new HashMap<String, List>();
         // 将获取的所有地块数据放入map中
         returnValue.put("allFloorList", allFloorList);
         // 将获取的所有单元楼数据放入map中

@@ -3,7 +3,9 @@ package com.spider.service.houses;
 import com.spider.entity.houses.TReb;
 import org.jsoup.nodes.Element;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by zhangyan on 17/7/16.
@@ -20,3 +22,4 @@ public interface IRebService {
      */
     public TReb getRebDetailsByElement(Element tr);
 }
+

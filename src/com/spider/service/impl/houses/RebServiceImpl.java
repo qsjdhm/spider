@@ -24,7 +24,7 @@ public class RebServiceImpl implements IRebService {
      */
     @Override
     public List<TReb> getAllReb () {
-        ArrayList<TReb> rebList = new ArrayList<TReb>();  // 承载房产商数据集合
+        List<TReb> rebList = new ArrayList<TReb>();  // 承载房产商数据集合
         int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         Document pageDoc = null;  // 承载抓取到的每页房产商数据
         String fdcUrl = "";

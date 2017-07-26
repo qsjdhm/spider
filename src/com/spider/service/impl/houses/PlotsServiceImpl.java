@@ -24,9 +24,9 @@ public class PlotsServiceImpl implements IPlotsService {
      * 根据全部的地块列表遍历每个地块数据，并且根据每个地块数据下潜获取此地块的单元楼列表数据（包括单元楼详情）
      */
     @Override
-    public HashMap<String, ArrayList> getPlotsListByAllFloor(List<TFloor> floorList) {
+    public Map<String, List> getPlotsListByAllFloor(List<TFloor> floorList) {
 
-        ArrayList<TPlots> allPlotsList = new ArrayList<TPlots>();
+        List<TPlots> allPlotsList = new ArrayList<TPlots>();
 
         for (TFloor floor : floorList) {
             // 根据每个地块信息获取它的单元楼数据
@@ -40,7 +40,7 @@ public class PlotsServiceImpl implements IPlotsService {
 
 
         // 组织下数据返回格式
-        HashMap<String, ArrayList> returnValue = new HashMap<String, ArrayList>();
+        Map<String, List> returnValue = new HashMap<String, List>();
         returnValue.put("allPlotsList", allPlotsList);
 
         return returnValue;
