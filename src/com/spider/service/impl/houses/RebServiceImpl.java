@@ -76,6 +76,17 @@ public class RebServiceImpl implements IRebService {
         return rebList;
     }
 
+
+    /**
+     * 根据某一页的url获取获取这一页的房产商数据
+     */
+    @Override
+    public List<TReb> getPageRebByUrl(String url) {
+
+        return null;
+    }
+
+
     /**
      * 根据从政府网抓取的每一条房产商数据下潜获取房产商的详情数据
      */
@@ -144,4 +155,15 @@ public class RebServiceImpl implements IRebService {
 
         return reb;
     }
+
+
+    /**
+     * 根据某个房产商详细页面的url获取这一个房产商的详细数据
+     */
+    @Override
+    public TReb getRebDetailsByUrl(String url) {
+
+        return null;
+    }
+
 }
