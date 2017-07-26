@@ -35,9 +35,12 @@ public class Main {
         for(Map<String, String> errorItem : errors) {
             for(String k : errorItem.keySet()) {
                 System.out.println(k+":"+errorItem.get(k));
-                System.out.println("=======");
             }
+            System.out.println("============================");
         }
+
+
+        System.out.println("++++++++++++++++++++++++++++++++++++=======");
 
 
         System.out.println("00---------------------");

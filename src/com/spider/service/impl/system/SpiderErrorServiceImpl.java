@@ -14,13 +14,28 @@ public class SpiderErrorServiceImpl {
 
     /**
      * 外部会逐条往errorList添加错误信息
+     * 外部根据返回数据拼接成想要的字符串
+     * @param type     分页、详情
+     * @param from     房产商、楼盘、地块、单元楼
+     * @param name     房产商、楼盘、地块、单元楼的第几页数据   房产商、楼盘、地块、单元楼的名称
+     * @param url      错误爬虫的源地址
+     * @param content  异常内容
+     * @param pReb     所属房产商
+     * @param pHouses  所属楼盘
+     * @param pFloor   所属地块
      */
-    public static void addError(String type, String name, String url, String content) {
+    public static void addError(String type, String from, String name,
+                                String url, String content,
+                                String pReb, String pHouses, String pFloor) {
         Map<String, String> error = new HashMap<String, String>();
         error.put("type", type);
+        error.put("from", from);
         error.put("name", name);
         error.put("url", url);
         error.put("content", content);
+        error.put("pReb", pReb);
+        error.put("pHouses", pHouses);
+        error.put("pFloor", pFloor);
         errorList.add(error);
     }
 

@@ -70,12 +70,12 @@ public class FloorServiceImpl implements IFloorService {
         int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         Document pageDoc = null;  // 承载抓取到的每页地块数据
 
-        String url = "";
+        String fdcUrl = "";
 
         try {
             do {
-                url = "http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=";
-                pageDoc = Jsoup.connect(url).timeout(5000).get();
+                fdcUrl = "http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=";
+                pageDoc = Jsoup.connect(fdcUrl).timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
 
                 // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式
@@ -99,7 +99,16 @@ public class FloorServiceImpl implements IFloorService {
         } catch (IOException e) {
 
             // 组织错误信息，供返回使用
-            SpiderErrorServiceImpl.addError("分页地块", "第"+fdcUrlPageNumer+"页", "http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=", "抓取[地块]   楼盘["+houses.getFdcHousesName()+"]>>>>>>地块第"+fdcUrlPageNumer+"页数据异常："+e);
+            SpiderErrorServiceImpl.addError(
+                    "分页",
+                    "地块",
+                    "第"+fdcUrlPageNumer+"页地块列表",
+                    fdcUrl,
+                    e.toString(),
+                    houses.getpRebName(),
+                    houses.getHousesName(),
+                    ""
+            );
 
             e.printStackTrace();
         }
@@ -145,7 +154,16 @@ public class FloorServiceImpl implements IFloorService {
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据完成!");
         } catch (IOException e) {
             // 组织错误信息，供返回使用
-            SpiderErrorServiceImpl.addError("地块", floorName, fdcUrl, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据异常："+e);
+            SpiderErrorServiceImpl.addError(
+                    "详情",
+                    "地块",
+                    "地块["+floorName+"]",
+                    fdcUrl,
+                    e.toString(),
+                    houses.getpRebName(),
+                    houses.getFdcHousesName(),
+                    ""
+            );
 
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据异常："+e);
             e.printStackTrace();

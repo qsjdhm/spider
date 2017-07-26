@@ -3,6 +3,7 @@ package com.spider.service.impl.houses;
 import com.spider.config.Constant;
 import com.spider.entity.houses.TReb;
 import com.spider.service.houses.IRebService;
+import com.spider.service.impl.system.SpiderErrorServiceImpl;
 import com.spider.utils.LogFile;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,10 +27,12 @@ public class RebServiceImpl implements IRebService {
         ArrayList<TReb> rebList = new ArrayList<TReb>();  // 承载房产商数据集合
         int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         Document pageDoc = null;  // 承载抓取到的每页房产商数据
+        String fdcUrl = "";
 
         try {
             do {
-                pageDoc = Jsoup.connect("http://www.jnfdc.gov.cn/kfqy/index_"+fdcUrlPageNumer+".shtml").timeout(5000).get();
+                fdcUrl = "http://www.jnfdc.gov.cn/kfqy/index_"+fdcUrlPageNumer+".shtml";
+                pageDoc = Jsoup.connect(fdcUrl).timeout(5000).get();
                 Elements trs = pageDoc.select(".project_table tr");
 
                 // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式
@@ -51,6 +54,19 @@ public class RebServiceImpl implements IRebService {
                 fdcUrlPageNumer++;
             } while (pageDoc != null);
         } catch (IOException e) {
+
+            // 组织错误信息，供返回使用
+            SpiderErrorServiceImpl.addError(
+                    "分页",
+                    "房产商",
+                    "第"+fdcUrlPageNumer+"页楼盘列表",
+                    fdcUrl,
+                    e.toString(),
+                    "",
+                    "",
+                    ""
+            );
+
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取政府网第"+fdcUrlPageNumer+"页房产商数据异常："+e);
             e.printStackTrace();
         }
@@ -96,6 +112,19 @@ public class RebServiceImpl implements IRebService {
 
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取房产商["+name+"]详细数据完成!");
         } catch (IOException e) {
+
+            // 组织错误信息，供返回使用
+            SpiderErrorServiceImpl.addError(
+                    "详情",
+                    "房产商",
+                    "房产商["+name+"]",
+                    spiderUrl,
+                    e.toString(),
+                    "",
+                    "",
+                    ""
+            );
+
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取房产商["+name+"]详细数据异常："+e);
             e.printStackTrace();
         }
