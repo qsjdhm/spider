@@ -18,7 +18,7 @@ public interface IRebService {
     public List<TReb> getAllReb();
 
     /**
-     * 根据某一页的url获取获取这一页的房产商数据
+     * 根据某一页房产商的url获取获取这一页的房产商数据
      */
     public List<TReb> getPageRebByUrl(String url);
 
