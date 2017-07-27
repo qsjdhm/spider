@@ -83,7 +83,42 @@ public class RebServiceImpl implements IRebService {
     @Override
     public List<TReb> getRebListByUrl(String url) {
 
-        return null;
+        List<TReb> rebList = new ArrayList<TReb>();  // 承载房产商数据集合
+        Document pageDoc = null;  // 承载抓取到的每页房产商数据
+
+        try {
+            pageDoc = Jsoup.connect(url).timeout(5000).get();
+            Elements trs = pageDoc.select(".project_table tr");
+
+            // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式
+            for (Element tr : trs) {
+                // 只获取有效数据的值
+                if (tr.select("td").size() > 1) {
+                    // 抓取详细信息
+                    rebList.add(getRebDetailsByElement(tr));
+                }
+            }
+
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "根据url["+url+"]抓取房产商分页数据完成!");
+        } catch (IOException e) {
+
+            // 组织错误信息，供返回使用
+            SpiderErrorServiceImpl.addError(
+                    "分页",
+                    "房产商",
+                    "房产商列表url["+url+"]",
+                    url,
+                    e.toString(),
+                    "",
+                    "",
+                    ""
+            );
+
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "根据url["+url+"]抓取房产商分页数据异常："+e);
+            e.printStackTrace();
+        }
+
+        return rebList;
     }
 
 
@@ -163,7 +198,68 @@ public class RebServiceImpl implements IRebService {
     @Override
     public TReb getRebDetailsByUrl(String url) {
 
-        return null;
+        TReb reb = new TReb();
+
+        String name = null;
+        String qualificationLevel = null;
+        String qualificationId = null;
+        String LegalPerson = null;
+        String address = null;
+        String phone = null;
+        String mail = null;
+        String registeredCapital = null;
+        String type = null;
+        String introduction = null;
+
+        // 根据url继续下潜抓取详细信息
+        Document detailedDoc = null;  // 承载抓取到的房产商详细数据
+        try {
+            detailedDoc = Jsoup.connect(url).timeout(5000).get();
+            Elements trs = detailedDoc.select(".message_table tr");
+
+            name = trs.eq(0).select("td").eq(1).text();
+            qualificationLevel = trs.eq(2).select("td").eq(1).text();
+            LegalPerson = trs.eq(5).select("td").eq(3).text();
+            address = trs.eq(1).select("td").eq(1).text();
+            phone = trs.eq(3).select("td").eq(3).text();
+            mail = trs.eq(4).select("td").eq(3).text();  // 企业邮箱
+            registeredCapital = trs.eq(5).select("td").eq(1).text();  // 注册资金
+            type = trs.eq(6).select("td").eq(1).text();  // 企业类型
+            introduction = trs.eq(7).select("td").eq(1).text();  // 企业简介
+
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "根据url["+url+"]抓取房产商详细数据完成!");
+        } catch (IOException e) {
+
+            // 组织错误信息，供返回使用
+            SpiderErrorServiceImpl.addError(
+                    "详情",
+                    "房产商",
+                    "房产商详情url["+url+"]",
+                    url,
+                    e.toString(),
+                    "",
+                    "",
+                    ""
+            );
+
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "根据url["+url+"]抓取房产商详细数据异常："+e);
+            e.printStackTrace();
+        }
+
+        reb.setRebId(UUID.randomUUID());
+        reb.setRebName(name);
+        reb.setFdcUrl(url);
+        reb.setQualificationLevel(qualificationLevel);
+        reb.setQualificationId(qualificationId);
+        reb.setLegalPerson(LegalPerson);
+        reb.setAddress(address);
+        reb.setPhone(phone);
+        reb.setMail(mail);
+        reb.setRegisteredCapital(registeredCapital);
+        reb.setType(type);
+        reb.setIntroduction(introduction);
+
+        return reb;
     }
 
 }
