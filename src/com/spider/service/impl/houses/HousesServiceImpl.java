@@ -107,10 +107,10 @@ public class HousesServiceImpl implements IHousesService {
     }
 
     /**
-     * 根据某一页楼盘的url获取获取这一页的楼盘数据,包含这一页的楼盘、这一页楼盘的地块、这一页楼盘的单元楼
+     * 根据某一页楼盘的url获取获取这一页的楼盘数据
      */
     @Override
-    public Map<String, List> getPageHousesByUrl(String url) {
+    public List<THouses> getHousesListByUrl(String url) {
 
         return null;
     }

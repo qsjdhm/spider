@@ -27,9 +27,19 @@ public interface IFloorService {
     public List<TFloor> getFloorListByHouses(THouses houses);
 
     /**
+     * 根据某一页地块的url获取获取这一页的地块数据
+     */
+    public List<TFloor> getFloorListByUrl(String url);
+
+    /**
      * 根据从政府网抓取的每一条地块数据下潜获取地块的详情数据
      */
     public TFloor getFloorDetailsByElement(Element tr, THouses houses);
+
+    /**
+     * 根据某个地块详细页面的url获取这一个地块的详细数据
+     */
+    public TFloor getFloorDetailsByUrl(String url);
 
 
 }

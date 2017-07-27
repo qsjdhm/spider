@@ -1,5 +1,6 @@
 package com.spider.service.houses;
 
+import com.spider.entity.houses.TFloor;
 import com.spider.entity.houses.THouses;
 import org.jsoup.nodes.Element;
 
@@ -20,9 +21,9 @@ public interface IHousesService {
     public Map<String, List> getAllHouses();
 
     /**
-     * 根据某一页楼盘的url获取获取这一页的楼盘数据,包含这一页的楼盘、这一页楼盘的地块、这一页楼盘的单元楼
+     * 根据某一页楼盘的url获取获取这一页的楼盘数据
      */
-    public Map<String, List> getPageHousesByUrl(String url);
+    public List<THouses> getHousesListByUrl(String url);
 
     /**
      * 根据从搜房网抓取的每一条楼盘数据下潜获取楼盘的详情数据

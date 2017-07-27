@@ -81,7 +81,7 @@ public class RebServiceImpl implements IRebService {
      * 根据某一页的url获取获取这一页的房产商数据
      */
     @Override
-    public List<TReb> getPageRebByUrl(String url) {
+    public List<TReb> getRebListByUrl(String url) {
 
         return null;
     }

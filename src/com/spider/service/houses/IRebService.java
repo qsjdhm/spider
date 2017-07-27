@@ -20,7 +20,7 @@ public interface IRebService {
     /**
      * 根据某一页房产商的url获取获取这一页的房产商数据
      */
-    public List<TReb> getPageRebByUrl(String url);
+    public List<TReb> getRebListByUrl(String url);
 
     /**
      * 根据从政府网抓取的每一条房产商数据下潜获取房产商的详情数据

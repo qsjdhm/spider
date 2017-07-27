@@ -114,6 +114,15 @@ public class FloorServiceImpl implements IFloorService {
     }
 
     /**
+     * 根据某一页地块的url获取获取这一页的地块数据
+     */
+    @Override
+    public List<TFloor> getFloorListByUrl(String url) {
+
+        return null;
+    }
+
+    /**
      * 根据从政府网抓取的每一条地块数据下潜获取地块的详情数据
      */
     @Override
@@ -180,5 +189,14 @@ public class FloorServiceImpl implements IFloorService {
         floor.setpRebName(pRebName);
 
         return floor;
+    }
+
+    /**
+     * 根据某个地块详细页面的url获取这一个地块的详细数据
+     */
+    @Override
+    public TFloor getFloorDetailsByUrl(String url) {
+
+        return null;
     }
 }

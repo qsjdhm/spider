@@ -26,8 +26,18 @@ public interface IPlotsService {
     public List<TPlots> getPlotsListByFloor(TFloor floor);
 
     /**
+     * 根据某一页单元楼的url获取获取这一页的单元楼数据
+     */
+    public List<TPlots> getPlotsListByUrl(String url);
+
+    /**
      * 根据从政府网抓取的每一条单元楼数据下潜获取单元楼的详情数据
      */
     public TPlots getPlotsDetailsByElement(Element tr, TFloor floor);
 
+
+    /**
+     * 根据某个单元楼详细页面的url获取这一个单元楼的详细数据
+     */
+    public TPlots getPlotsDetailsByUrl(String url);
 }

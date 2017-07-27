@@ -106,6 +106,15 @@ public class PlotsServiceImpl implements IPlotsService {
     }
 
     /**
+     * 根据某一页单元楼的url获取获取这一页的单元楼数据
+     */
+    @Override
+    public List<TPlots> getPlotsListByUrl(String url) {
+
+        return null;
+    }
+
+    /**
      * 根据从政府网抓取的每一条单元楼数据下潜获取单元楼的详情数据
      */
     @Override
@@ -185,5 +194,14 @@ public class PlotsServiceImpl implements IPlotsService {
         plots.setpRebName(pRebName);
 
         return plots;
+    }
+
+    /**
+     * 根据某个单元楼详细页面的url获取这一个单元楼的详细数据
+     */
+    @Override
+    public TPlots getPlotsDetailsByUrl(String url) {
+
+        return null;
     }
 }
