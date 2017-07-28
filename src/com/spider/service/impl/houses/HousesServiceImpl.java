@@ -30,10 +30,12 @@ public class HousesServiceImpl implements IHousesService {
     public Map<String, List> getAllHouses() {
 
         Map<String, List> allData = new HashMap<String, List>();  // 承载此接口返回的所有数据
+
         List<THouses> allHousesList = new ArrayList<THouses>();  // 承载所有楼盘数据集合
         List<TFloor> allFloorList = new ArrayList<TFloor>();  // 承载所有地块数据集合
         List<TPlots> allPlotsList = new ArrayList<TPlots>();  // 承载所有单元楼数据集合
         ArrayList<HashMap<String, String>> allErrorList = new ArrayList<HashMap<String, String>>();  // 承载所有抓取错误数据集合
+
         int sfwUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         boolean isContinue = true;  // 是否继续循环
 
@@ -85,7 +87,6 @@ public class HousesServiceImpl implements IHousesService {
         } while (isContinue);
 
         // 根据楼盘列表获取它们的地块、单元楼数据列表
-        //Map<String, List> floorAndPlotsData = getFloorAndPlotsListByHousesList(allHousesList);
         allData.put("allHousesList", allHousesList);
         allData.put("allFloorList", allFloorList);
         allData.put("allPlotsList", allPlotsList);
@@ -118,48 +119,35 @@ public class HousesServiceImpl implements IHousesService {
             e.printStackTrace();
         }
 
-
-        allData.put("allHousesList", allHousesList);
-        allData.put("allErrorList", SpiderErrorServiceImpl.getErrorList(true));
-
+        // 根据楼盘列表获取它们的地块、单元楼数据列表
         if (isAll) {
-            // 根据楼盘列表获取它们的地块、单元楼数据列表
-            Map<String, List> floorAndPlotsData = getFloorAndPlotsListByHousesList(allHousesList);
+            /**
+             * 跑全部数据这里要放开
+             */
+            //List<THouses> tempHousesList = housesList;
+            /**
+             * 跑简要数据这里要放开
+             */
+            List<THouses> tempHousesList = new ArrayList<THouses>();
+            if (allHousesList.size() > 0) {
+                for(int i = 0; i < 4; i++){
+                    tempHousesList.add(allHousesList.get(i));
+                }
+            }
+
+            // 根据楼盘列表，从政府网获取所有地块、单元楼的数据
+            FloorServiceImpl floorService = new FloorServiceImpl();
+            Map<String, List> floorAndPlotsData = floorService.getFloorListByAllHouses(tempHousesList);
+
             allData.put("allFloorList", floorAndPlotsData.get("allFloorList"));
             allData.put("allPlotsList", floorAndPlotsData.get("allPlotsList"));
         }
 
+        allData.put("allHousesList", allHousesList);
+        allData.put("allErrorList", SpiderErrorServiceImpl.getErrorList(true));
+
         return allData;
     }
-
-
-    /**
-     * 根据楼盘列表获取它们的地块、单元楼数据列表
-     */
-    @Override
-    public Map<String, List> getFloorAndPlotsListByHousesList(List<THouses> housesList) {
-
-        /**
-         * 跑简要数据这里要放开
-         */
-        //List<THouses> tempHousesList = housesList;
-        List<THouses> tempHousesList = new ArrayList<THouses>();
-        if (housesList.size() > 0) {
-            for(int i = 0; i < 4; i++){
-                tempHousesList.add(housesList.get(i));
-            }
-        }
-
-        Map<String, List> allData = new HashMap<String, List>();  // 承载此接口返回的所有数据
-        // 根据楼盘列表，从政府网获取所有地块、单元楼的数据
-        FloorServiceImpl floorService = new FloorServiceImpl();
-        Map<String, List> floorAndPlotsData = floorService.getFloorListByAllHouses(tempHousesList);
-
-        allData.put("allFloorList", floorAndPlotsData.get("allFloorList"));
-        allData.put("allPlotsList", floorAndPlotsData.get("allPlotsList"));
-        return allData;
-    }
-
 
     /**
      * 根据从搜房网抓取的每一条楼盘数据下潜获取楼盘的详情数据
@@ -167,12 +155,11 @@ public class HousesServiceImpl implements IHousesService {
     @Override
     public THouses getHousesDetailsByElement(Element li) {
 
-        String sfwUrl = li.select(".nlc_details .nlcd_name a").attr("href");
-
         /**
          * 为了避免获取详情出错导致无法获取楼盘名称，如果没有楼盘名称，就无法获取政府网的地块、单元楼数据了
          * 所以这里需要尽可能的从列表获取一些数据，在获取完详情数据后，再覆盖从详情页面获取到的值
          */
+        String sfwUrl = li.select(".nlc_details .nlcd_name a").attr("href");
         String name = li.select(".nlc_details .nlcd_name a").text();
         String cover = li.select(".nlc_img img").eq(1).attr("src");
         String address = li.select(".nlc_details .address a").text();
