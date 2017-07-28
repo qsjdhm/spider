@@ -21,9 +21,14 @@ public interface IHousesService {
     public Map<String, List> getAllHouses();
 
     /**
-     * 根据某一页楼盘的url获取获取这一页的楼盘数据
+     * 根据某一页楼盘的url获取获取这一页的楼盘数据和下潜的数据
      */
-    public List<THouses> getHousesListByUrl(String url);
+    public Map<String, List> getHousesListByUrl(String url, boolean isAll);
+
+    /**
+     * 根据楼盘列表获取它们的地块、单元楼数据列表
+     */
+    public Map<String, List> getFloorAndPlotsListByHousesList(List<THouses> housesList);
 
     /**
      * 根据从搜房网抓取的每一条楼盘数据下潜获取楼盘的详情数据
