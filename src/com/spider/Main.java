@@ -6,6 +6,7 @@ import com.spider.entity.houses.TPlots;
 import com.spider.entity.houses.TReb;
 import com.spider.service.impl.houses.FloorServiceImpl;
 import com.spider.service.impl.houses.HousesServiceImpl;
+import com.spider.service.impl.houses.PlotsServiceImpl;
 import com.spider.service.impl.houses.RebServiceImpl;
 import com.spider.service.impl.system.SpiderErrorServiceImpl;
 
@@ -21,10 +22,11 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
 
+        RebServiceImpl rebService = new RebServiceImpl();
+        TReb reb = rebService.getRebDetailsByUrl("http://www.jnfdc.gov.cn/kfqy/show/f96724fb-d1cd-447c-9906-bf56e579a71e.shtml");
 
-
-
-
+        System.out.println(reb.getRebName());
+        System.out.println(reb.getRegisteredCapital());
 
     }
 }

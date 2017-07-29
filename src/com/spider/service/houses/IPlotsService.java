@@ -18,26 +18,26 @@ public interface IPlotsService {
     /**
      * 根据全部的地块列表遍历每个地块数据，并且根据每个地块数据下潜获取此地块的单元楼列表数据（包括单元楼详情）
      */
-    public Map<String, List> getPlotsListByAllFloor(List<TFloor> floorList);
+    public Map<String, List> getAllListByAllFloor(List<TFloor> floorList);
 
     /**
      * 根据地块从政府网抓取此地块的单元楼列表数据，并调用获取单元楼详情方法
      */
-    public List<TPlots> getPlotsListByFloor(TFloor floor);
+    public List<TPlots> getAllListByFloor(TFloor floor);
 
     /**
      * 根据某一页单元楼的url获取获取这一页的单元楼数据
      */
-    public List<TPlots> getPlotsListByUrl(String url);
+    public Map<String, List> getPageListByUrl(String url, String floorName, boolean isInfiltrate);
 
     /**
      * 根据从政府网抓取的每一条单元楼数据下潜获取单元楼的详情数据
      */
-    public TPlots getPlotsDetailsByElement(Element tr, TFloor floor);
+    public TPlots getDetailsByElement(Element tr, String floorName);
 
 
     /**
      * 根据某个单元楼详细页面的url获取这一个单元楼的详细数据
      */
-    public TPlots getPlotsDetailsByUrl(String url);
+    public TPlots getDetailsByUrl(String url, String floorName);
 }

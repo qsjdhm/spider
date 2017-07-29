@@ -43,7 +43,7 @@ public class FloorServiceImpl implements IFloorService {
 
         // 组织所有单元楼数据
         PlotsServiceImpl plotsService = new PlotsServiceImpl();
-        List<TPlots> allPlotsList = plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList");
+        List<TPlots> allPlotsList = plotsService.getAllListByAllFloor(allFloorList).get("allPlotsList");
 
         // 组织下数据返回格式
         Map<String, List> returnValue = new HashMap<String, List>();
@@ -85,7 +85,6 @@ public class FloorServiceImpl implements IFloorService {
             fdcUrlPageNumer++;
         } while (isContinue);
 
-
         return allFloorList;
     }
 
@@ -117,7 +116,7 @@ public class FloorServiceImpl implements IFloorService {
         // 根据地块列表获取他们的单元楼数据列表
         if (isInfiltrate) {
             PlotsServiceImpl plotsService = new PlotsServiceImpl();
-            List<TPlots> allPlotsList = plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList");
+            List<TPlots> allPlotsList = plotsService.getAllListByAllFloor(allFloorList).get("allPlotsList");
 
             allData.put("allPlotsList", allPlotsList);
         }
