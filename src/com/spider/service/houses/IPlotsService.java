@@ -52,6 +52,7 @@ public interface IPlotsService {
      * 根据某个单元楼详细页面的url获取这一个单元楼的详细数据
      * @param url 某个地块详细页面的url
      * @param floorName 所属地块名称
+     * @param plotsName 单元楼名称
      */
-    public TPlots getDetailsByUrl(String url, String floorName);
+    public TPlots getDetailsByUrl(String url, String floorName, String plotsName);
 }

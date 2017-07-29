@@ -52,8 +52,9 @@ public interface IFloorService {
      * 根据某个地块详细页面的url获取这一个地块的详细数据
      * @param url 某个地块详细页面的url
      * @param housesName 所属楼盘名称（解析后在政府网查询使用）
+     * @param floorName 地块名称
      */
-    public TFloor getDetailsByUrl(String url, String housesName);
+    public TFloor getDetailsByUrl(String url, String housesName, String floorName);
 
 
 }

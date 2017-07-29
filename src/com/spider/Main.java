@@ -23,11 +23,15 @@ public class Main {
 
 
         RebServiceImpl rebService = new RebServiceImpl();
-        TReb reb = rebService.getRebDetailsByUrl("http://www.jnfdc.gov.cn/kfqy/show/f96724fb-d1cd-447c-9906-bf56e579a71e.shtml");
+        List<TReb> allRebList = rebService.getAllList();
 
-        System.out.println(reb.getRebName());
-        System.out.println(reb.getRegisteredCapital());
-
+        System.out.println("---------------------房产商数据---------------------");
+        System.out.println("房产商个数"+allRebList.size());
+        System.out.println("房产商名称");
+        for (TReb reb : allRebList) {
+            System.out.println(reb.getRebName());
+            System.out.println(reb.getRegisteredCapital());
+        }
     }
 }
 

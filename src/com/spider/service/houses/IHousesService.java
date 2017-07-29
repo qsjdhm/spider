@@ -41,8 +41,9 @@ public interface IHousesService {
     /**
      * 根据某个楼盘详细页面的url获取这一个楼盘的详细数据
      * @param url 某个楼盘详细页面的url
+     * @param housesName 某个楼盘名称
      */
-    public THouses getDetailsByUrl(String url);
+    public THouses getDetailsByUrl(String url, String housesName);
 
 
 }

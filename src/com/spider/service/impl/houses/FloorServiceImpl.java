@@ -51,11 +51,9 @@ public class FloorServiceImpl implements IFloorService {
         PlotsServiceImpl plotsService = new PlotsServiceImpl();
         List<TPlots> allPlotsList = plotsService.getAllListByAllFloor(allFloorList).get("allPlotsList");
 
-        // 组织下数据返回格式
+        // 将获取的所有地块、所有单元楼放入map中
         Map<String, List> returnValue = new HashMap<String, List>();
-        // 将获取的所有地块数据放入map中
         returnValue.put("allFloorList", allFloorList);
-        // 将获取的所有单元楼数据放入map中
         returnValue.put("allPlotsList", allPlotsList);
 
         return returnValue;
@@ -87,8 +85,6 @@ public class FloorServiceImpl implements IFloorService {
                 isContinue = false;
             }
 
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取政府网楼盘["+housesName+"]的>>>>>>全部地块第"+fdcUrlPageNumer+"页数据完成");
-
             fdcUrlPageNumer++;
         } while (isContinue);
 
@@ -119,7 +115,10 @@ public class FloorServiceImpl implements IFloorService {
                     allFloorList.add(getDetailsByElement(tr, housesName));
                 }
             }
+
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[楼盘]["+housesName+"]的[地块]分页列表数据完成!");
         } catch (IOException e) {
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[楼盘]["+housesName+"]的[地块]分页列表数据异常："+e);
             e.printStackTrace();
         }
 
@@ -153,7 +152,7 @@ public class FloorServiceImpl implements IFloorService {
         String pRebName = tds.eq(3).text();  // 所属房产商名称
         String pHousesName = housesName;  // 所属楼盘名称
 
-        TFloor floor = getDetailsByUrl(fdcUrl, housesName);
+        TFloor floor = getDetailsByUrl(fdcUrl, housesName, floorName);
 
         floor.setFloorName(floorName);
         floor.setFdcUrl(fdcUrl);
@@ -169,13 +168,12 @@ public class FloorServiceImpl implements IFloorService {
      * 根据某个地块详细页面的url获取这一个地块的详细数据
      * @param url 某个地块详细页面的url
      * @param housesName 所属楼盘名称（解析后在政府网查询使用）
+     * @param floorName 地块名称
      */
     @Override
-    public TFloor getDetailsByUrl(String url, String housesName) {
+    public TFloor getDetailsByUrl(String url, String housesName, String floorName) {
 
-        TFloor floor = new TFloor();
-
-        String floorName = null;  // 地块名称
+        String name = floorName;  // 地块名称
         String fdcUrl = url;  // 地块详情页面政府网URL
         String canSold = null;  // 可售套数
         String address = null;  // 项目地址
@@ -194,7 +192,7 @@ public class FloorServiceImpl implements IFloorService {
             detailedDoc = Jsoup.connect(url).timeout(5000).get();
             Elements trs = detailedDoc.select(".message_table tr");
 
-            floorName = trs.eq(1).select("td").eq(1).text();
+            name = trs.eq(1).select("td").eq(1).text();
             address = trs.eq(1).select("td").eq(3).text();
             pRebName = trs.eq(2).select("td").eq(1).text();
             county = trs.eq(2).select("td").eq(3).text();
@@ -202,7 +200,7 @@ public class FloorServiceImpl implements IFloorService {
             totalPlotsNumber = trs.eq(3).select("td").eq(3).text();
             property = trs.eq(5).select("td").eq(1).text();
 
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据完成!");
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[楼盘]["+housesName+"]的[地块]["+floorName+"]详细数据完成!");
         } catch (IOException e) {
             // 组织错误信息，供返回使用
             SpiderErrorServiceImpl.addError(
@@ -216,12 +214,13 @@ public class FloorServiceImpl implements IFloorService {
                     ""
             );
 
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据异常："+e);
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "[根据url]:"+url+"抓取[楼盘]["+housesName+"]的[地块]["+floorName+"]详细数据异常："+e);
             e.printStackTrace();
         }
 
+        TFloor floor = new TFloor();
         floor.setFloorId(UUID.randomUUID());
-        floor.setFloorName(floorName);
+        floor.setFloorName(name);
         floor.setFdcUrl(fdcUrl);
         floor.setCanSold(canSold);
         floor.setAddress(address);

@@ -61,7 +61,7 @@ public class HousesServiceImpl implements IHousesService {
             List<THouses> pageHousesList = pageAllData.get("allHousesList");
             List<TFloor> pageFloorList = pageAllData.get("allFloorList");
             List<TPlots> pagePlotsList = pageAllData.get("allPlotsList");
-            ArrayList<HashMap<String, String>> pageErrorList = (ArrayList<HashMap<String, String>>) pageAllData.get("allErrorList");
+//            ArrayList<HashMap<String, String>> pageErrorList = (ArrayList<HashMap<String, String>>) pageAllData.get("allErrorList");
 
             // 得到每页的楼盘数据放到allHousesList中方便接下来获取下潜数据
             for (THouses houses : pageHousesList) {
@@ -79,9 +79,9 @@ public class HousesServiceImpl implements IHousesService {
             }
 
             // 得到每页的楼盘数据放到allHousesList中方便接下来获取下潜数据
-            for (HashMap<String, String> error : pageErrorList) {
-                allErrorList.add(error);
-            }
+//            for (HashMap<String, String> error : pageErrorList) {
+//                allErrorList.add(error);
+//            }
 
             // 如果获取的td是空数据  就设置pageDoc为null
             if (pageHousesList.size() == 0) {
@@ -95,7 +95,7 @@ public class HousesServiceImpl implements IHousesService {
         allData.put("allHousesList", allHousesList);
         allData.put("allFloorList", allFloorList);
         allData.put("allPlotsList", allPlotsList);
-        allData.put("allErrorList", allErrorList);
+//        allData.put("allErrorList", allErrorList);
 
         return allData;
     }
@@ -122,7 +122,10 @@ public class HousesServiceImpl implements IHousesService {
                 // 抓取详细信息
                 allHousesList.add(getDetailsByElement(li));
             }
+
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[楼盘]分页列表数据完成!");
         } catch (IOException e) {
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "[根据url]:"+url+"抓取[楼盘]分页列表数据异常："+e);
             e.printStackTrace();
         }
 
@@ -151,7 +154,7 @@ public class HousesServiceImpl implements IHousesService {
         }
 
         allData.put("allHousesList", allHousesList);
-        allData.put("allErrorList", SpiderErrorServiceImpl.getErrorList(true));
+        //allData.put("allErrorList", SpiderErrorServiceImpl.getErrorList(true));
 
         return allData;
     }
@@ -172,7 +175,7 @@ public class HousesServiceImpl implements IHousesService {
         String cover = li.select(".nlc_img img").eq(1).attr("src");
         String address = li.select(".nlc_details .address a").text();
 
-        THouses houses = getDetailsByUrl(sfwUrl);
+        THouses houses = getDetailsByUrl(sfwUrl, name);
 
         houses.setHousesName(name);
         houses.setCover(cover);
@@ -184,14 +187,13 @@ public class HousesServiceImpl implements IHousesService {
     /**
      * 根据某个楼盘详细页面的url获取这一个楼盘的详细数据
      * @param url 某个楼盘详细页面的url
+     * @param housesName 某个楼盘名称
      */
     @Override
-    public THouses getDetailsByUrl(String url) {
-
-        THouses houses = new THouses();
+    public THouses getDetailsByUrl(String url, String housesName) {
 
         String sfwUrl = url;
-        String name = null;
+        String name = housesName;
         String cover = null;
         String address = null;
         String averagePrice = null;
@@ -220,7 +222,8 @@ public class HousesServiceImpl implements IHousesService {
                 pRebName = detailedDoc.select("#txt_developer").attr("value").trim();
             }
 
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[楼盘]   ["+name+"]详细数据完成!");
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[楼盘]["+name+"]详细数据完成!");
+
         } catch (IOException e) {
 
             // 组织错误信息，供返回使用
@@ -235,12 +238,11 @@ public class HousesServiceImpl implements IHousesService {
                     ""
             );
 
-            // 错误信息写入到自己的日志中
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[楼盘]   ["+name+"]详细数据异常："+e);
-
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "[根据url]:"+url+"抓取[楼盘]["+name+"]详细数据异常："+e);
             e.printStackTrace();
         }
 
+        THouses houses = new THouses();
         houses.setHousesId(UUID.randomUUID());
         houses.setHousesName(name);
         houses.setFdcHousesName(AnalysisHouseUtil.extractValidHousesName(name));

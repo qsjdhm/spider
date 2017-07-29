@@ -45,7 +45,6 @@ public class PlotsServiceImpl implements IPlotsService {
             }
         }
 
-
         // 组织下数据返回格式
         Map<String, List> returnValue = new HashMap<String, List>();
         returnValue.put("allPlotsList", allPlotsList);
@@ -81,8 +80,6 @@ public class PlotsServiceImpl implements IPlotsService {
                 isContinue = false;
             }
 
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取政府网地块["+floor.getFloorName()+"]的>>>>>>全部单元楼第"+fdcUrlPageNumer+"页数据完成");
-
             fdcUrlPageNumer++;
         } while (isContinue);
 
@@ -110,10 +107,12 @@ public class PlotsServiceImpl implements IPlotsService {
                     allPlotsList.add(getDetailsByElement(tr, floorName));
                 }
             }
+
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[地块]["+floorName+"]的[单元楼]分页列表数据完成!");
         } catch (IOException e) {
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "[根据url]:"+url+"抓取[楼盘]["+floorName+"]的[地块]分页列表数据异常："+e);
             e.printStackTrace();
         }
-
 
         allData.put("allPlotsList", allPlotsList);
         //allData.put("allErrorList", SpiderErrorServiceImpl.getErrorList(true));
@@ -135,7 +134,7 @@ public class PlotsServiceImpl implements IPlotsService {
         String salePermit = tds.eq(2).attr("title");  // 商品房预售许可证
         String pFloorName = floorName;  // 所属地块名称
 
-        TPlots plots = getDetailsByUrl(fdcUrl, floorName);
+        TPlots plots = getDetailsByUrl(fdcUrl, floorName, plotsName);
 
         plots.setPlotsName(plotsName);
         plots.setFdcUrl(fdcUrl);
@@ -149,14 +148,15 @@ public class PlotsServiceImpl implements IPlotsService {
      * 根据某个单元楼详细页面的url获取这一个单元楼的详细数据
      * @param url 某个地块详细页面的url
      * @param floorName 所属地块名称
+     * @param plotsName 单元楼名称
      */
     @Override
-    public TPlots getDetailsByUrl(String url, String floorName) {
+    public TPlots getDetailsByUrl(String url, String floorName, String plotsName) {
 
         TPlots plots = new TPlots();
 
         UUID plotsId = UUID.randomUUID();  // 单元楼ID
-        String plotsName = null;  // 单元楼名称
+        String name = plotsName;  // 单元楼名称
         String fdcUrl = url;  // 单元楼页面政府网URL
         String area = null;  // 建筑面积
         String decoration = null;  // 装修标准
@@ -179,7 +179,7 @@ public class PlotsServiceImpl implements IPlotsService {
             detailedDoc = Jsoup.connect(fdcUrl).timeout(5000).get();
             Elements trs = detailedDoc.select(".message_table tr");
 
-            plotsName = trs.eq(1).select("td").eq(1).text();  // 单元楼名称
+            name = trs.eq(1).select("td").eq(1).text();  // 单元楼名称
             pRebName = trs.eq(2).select("td").eq(1).text();  // 所属房产商名称
             area = trs.eq(4).select("td").eq(3).text()+"(万m²)";  // 建筑面积
             decoration = trs.eq(5).select("td").eq(3).text();  // 装修标准
@@ -190,7 +190,7 @@ public class PlotsServiceImpl implements IPlotsService {
             planningPermit = trs.eq(8).select("td").eq(1).text();  // 建设工程规划许可证
             constructionPermit = trs.eq(8).select("td").eq(3).text();  // 建设工程施工许可证
 
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[单元楼]   地块["+pFloorName+"]>>>>>>单元楼["+plotsName+"]详细数据完成!");
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[地块]["+floorName+"]的[单元楼]["+plotsName+"]详细数据完成!");
         } catch (IOException e) {
 
             // 组织错误信息，供返回使用
@@ -205,12 +205,12 @@ public class PlotsServiceImpl implements IPlotsService {
                     floorName
             );
 
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "抓取[单元楼]   地块["+pFloorName+"]>>>>>>单元楼["+plotsName+"]详细数据异常："+e);
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "[根据url]:"+url+"抓取[地块]["+floorName+"]的[单元楼]["+plotsName+"]详细数据异常："+e);
             e.printStackTrace();
         }
 
         plots.setPlotsId(plotsId);
-        plots.setPlotsName(plotsName);
+        plots.setPlotsName(name);
         plots.setFdcUrl(fdcUrl);
         plots.setArea(area);
         plots.setDecoration(decoration);
