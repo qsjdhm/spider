@@ -16,6 +16,11 @@ import java.util.*;
 /**
  * Created by zhangyan on 2017/7/20.
  * 处理房产商业务功能
+ *
+ * 主要对外接口描述
+ * 1. 可获取全部列表数据  getAllList
+ * 2. 可获取单页列表数据  getPageListByUrl
+ * 3. 可获取单个详情数据  getDetailsByUrl
  */
 public class RebServiceImpl implements IRebService {
 
@@ -23,7 +28,7 @@ public class RebServiceImpl implements IRebService {
      * 从政府网获取所有房产商数据
      */
     @Override
-    public List<TReb> getAllReb () {
+    public List<TReb> getAllList () {
         List<TReb> rebList = new ArrayList<TReb>();  // 承载房产商数据集合
         int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
         Document pageDoc = null;  // 承载抓取到的每页房产商数据
@@ -40,7 +45,7 @@ public class RebServiceImpl implements IRebService {
                     // 只获取有效数据的值
                     if (tr.select("td").size() > 1) {
                         // 抓取详细信息
-                        rebList.add(getRebDetailsByElement(tr));
+                        rebList.add(getDetailsByElement(tr));
                     }
                 }
 
@@ -78,10 +83,11 @@ public class RebServiceImpl implements IRebService {
 
 
     /**
-     * 根据某一页的url获取获取这一页的房产商数据
+     * 根据某一页房产商列表页面的url获取获取这一页的房产商列表数据
+     * @param url 某一页房产商列表页面的url
      */
     @Override
-    public List<TReb> getRebListByUrl(String url) {
+    public List<TReb> getPageListByUrl(String url) {
 
         List<TReb> rebList = new ArrayList<TReb>();  // 承载房产商数据集合
         Document pageDoc = null;  // 承载抓取到的每页房产商数据
@@ -95,7 +101,7 @@ public class RebServiceImpl implements IRebService {
                 // 只获取有效数据的值
                 if (tr.select("td").size() > 1) {
                     // 抓取详细信息
-                    rebList.add(getRebDetailsByElement(tr));
+                    rebList.add(getDetailsByElement(tr));
                 }
             }
 
@@ -124,9 +130,10 @@ public class RebServiceImpl implements IRebService {
 
     /**
      * 根据从政府网抓取的每一条房产商数据下潜获取房产商的详情数据
+     * @param tr 抓取的每一条房产商DOM数据
      */
     @Override
-    public TReb getRebDetailsByElement(Element tr) {
+    public TReb getDetailsByElement(Element tr) {
 
         TReb reb = new TReb();
 
@@ -193,10 +200,11 @@ public class RebServiceImpl implements IRebService {
 
 
     /**
-     * 根据某个房产商详细页面的url获取这一个房产商的详细数据
+     * 根据某一个房产商详细页面的url获取这一个房产商的详细数据
+     * @param url 某一个房产商详细页面的url
      */
     @Override
-    public TReb getRebDetailsByUrl(String url) {
+    public TReb getDetailsByUrl(String url) {
 
         TReb reb = new TReb();
 
