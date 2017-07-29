@@ -118,7 +118,7 @@ public class FloorServiceImpl implements IFloorService {
 
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[楼盘]["+housesName+"]的[地块]分页列表数据完成!");
         } catch (IOException e) {
-            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "[根据url]:"+url+"抓取[楼盘]["+housesName+"]的[地块]分页列表数据异常："+e);
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.ERROR, "[根据url]:"+url+"抓取[楼盘]["+housesName+"]的[地块]分页列表数据异常："+e);
             e.printStackTrace();
         }
 
