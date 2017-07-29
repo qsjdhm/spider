@@ -26,21 +26,20 @@ public class FloorServiceImpl implements IFloorService {
      * 在获得地块列表数据后，再根据地块列表获取单元楼列表数据（包括单元楼详情）
      */
     @Override
-    public Map<String, List> getFloorListByAllHouses(List<THouses> housesList) {
+    public Map<String, List> getAllListByAllHouses(List<THouses> housesList) {
 
         List<TFloor> allFloorList = new ArrayList<TFloor>();
 
         // 组织所有地块数据
         for (THouses houses : housesList) {
             // 根据每个楼盘信息获取它的地块数据
-            ArrayList<TFloor> housesFloorList = getFloorListByHouses(houses);
+            List<TFloor> housesFloorList = getAllListByHouses(houses);
 
             // 再把每个楼盘的地块遍历出来放到全部地块数组中
             for (TFloor housesFloor : housesFloorList) {
                 allFloorList.add(housesFloor);
             }
         }
-
 
         // 组织所有单元楼数据
         PlotsServiceImpl plotsService = new PlotsServiceImpl();
@@ -54,109 +53,142 @@ public class FloorServiceImpl implements IFloorService {
         returnValue.put("allPlotsList", allPlotsList);
 
         return returnValue;
-
     }
 
     /**
      * 根据楼盘从政府网抓取此楼盘的地块列表数据，并调用获取地块详情方法
      */
     @Override
-    public ArrayList<TFloor> getFloorListByHouses(THouses houses) {
+    public List<TFloor> getAllListByHouses(THouses houses) {
 
-        ArrayList<TFloor> floorList = new ArrayList<TFloor>();  // 承载地块数据集合
+        List<TFloor> allFloorList = new ArrayList<TFloor>();  // 承载此楼盘所有地块数据列表
+        String housesName = houses.getFdcHousesName();
+
         int fdcUrlPageNumer = 1;  // 政府网url页数索引，会进行累加数值直至获取不到数据
-        Document pageDoc = null;  // 承载抓取到的每页地块数据
+        boolean isContinue = true;  // 是否继续循环
 
-        String fdcUrl = "";
+        do {
+            String fdcUrl = "http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+housesName+"&en=";
+            Map<String, List> allData = getPageListByUrl(fdcUrl, housesName, false);
+            List<TFloor> pageFloorList = allData.get("allFloorList");
 
-        try {
-            do {
-                fdcUrl = "http://www.jnfdc.gov.cn/onsaling/index_"+fdcUrlPageNumer+".shtml?zn=all&pu=all&pn="+houses.getFdcHousesName()+"&en=";
-                pageDoc = Jsoup.connect(fdcUrl).timeout(5000).get();
-                Elements trs = pageDoc.select(".project_table tr");
+            for (TFloor floor : pageFloorList) {
+                allFloorList.add(floor);
+            }
 
-                // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式
-                for (Element tr : trs) {
-                    // 只获取有效数据的值
-                    if (tr.select("td").size() > 1) {
-                        // 抓取详细信息
-                        floorList.add(getFloorDetailsByElement(tr, houses));
-                    }
-                }
+            if (pageFloorList.size() == 0) {
+                isContinue = false;
+            }
 
-                // 如果获取的td是空数据  就设置pageDoc为null
-                if (trs.size() <= 2) {
-                    pageDoc = null;
-                }
+            LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取政府网楼盘["+housesName+"]的>>>>>>全部地块第"+fdcUrlPageNumer+"页数据完成");
 
-                LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取政府网楼盘["+houses.getHousesName()+"]的>>>>>>全部地块第"+fdcUrlPageNumer+"页数据完成");
+            fdcUrlPageNumer++;
+        } while (isContinue);
 
-                fdcUrlPageNumer++;
-            } while (pageDoc != null);
-        } catch (IOException e) {
 
-            // 组织错误信息，供返回使用
-            SpiderErrorServiceImpl.addError(
-                    "分页",
-                    "地块",
-                    "第"+fdcUrlPageNumer+"页地块列表",
-                    fdcUrl,
-                    e.toString(),
-                    houses.getpRebName(),
-                    houses.getHousesName(),
-                    ""
-            );
-
-            e.printStackTrace();
-        }
-
-        return floorList;
+        return allFloorList;
     }
 
     /**
      * 根据某一页地块的url获取获取这一页的地块数据
      */
     @Override
-    public List<TFloor> getFloorListByUrl(String url) {
+    public Map<String, List> getPageListByUrl(String url, String housesName, boolean isInfiltrate) {
 
-        return null;
+        Map<String, List> allData = new HashMap<String, List>();  // 承载此接口返回的所有数据
+        List<TFloor> allFloorList = new ArrayList<TFloor>();  // 承载地块数据集合
+
+        try {
+            Document pageDoc = Jsoup.connect(url).timeout(5000).get();
+            Elements trs = pageDoc.select(".project_table tr");
+
+            // 因为抓取到的数据不规范，所以要自己组织为规范的数据格式
+            for (Element tr : trs) {
+                // 只获取有效数据的值
+                if (tr.select("td").size() > 1) {
+                    // 抓取详细信息
+                    allFloorList.add(getDetailsByElement(tr, housesName));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 根据地块列表获取他们的单元楼数据列表
+        if (isInfiltrate) {
+            PlotsServiceImpl plotsService = new PlotsServiceImpl();
+            List<TPlots> allPlotsList = plotsService.getPlotsListByAllFloor(allFloorList).get("allPlotsList");
+
+            allData.put("allPlotsList", allPlotsList);
+        }
+
+        allData.put("allFloorList", allFloorList);
+        //allData.put("allErrorList", SpiderErrorServiceImpl.getErrorList(true));
+
+        return allData;
     }
 
     /**
      * 根据从政府网抓取的每一条地块数据下潜获取地块的详情数据
      */
     @Override
-    public TFloor getFloorDetailsByElement(Element tr, THouses houses) {
+    public TFloor getDetailsByElement(Element tr, String housesName) {
 
-        TFloor floor = new TFloor();
         Elements tds = tr.select("td");
-
         String floorName = tds.eq(1).attr("title");  // 地块名称
         String fdcUrl = "http://www.jnfdc.gov.cn" + tds.eq(1).select("a").attr("href");  // 地块详情页面政府网URL
         String canSold = tds.eq(4).text();  // 可售套数
         String address = tds.eq(2).text();  // 项目地址
+        String pRebName = tds.eq(3).text();  // 所属房产商名称
+        String pHousesName = housesName;  // 所属楼盘名称
+
+        TFloor floor = getDetailsByUrl(fdcUrl, housesName);
+
+        floor.setFloorName(floorName);
+        floor.setFdcUrl(fdcUrl);
+        floor.setCanSold(canSold);
+        floor.setAddress(address);
+        floor.setpHousesName(pHousesName);
+        floor.setpRebName(pRebName);
+
+        return floor;
+    }
+
+    /**
+     * 根据某个地块详细页面的url获取这一个地块的详细数据
+     */
+    @Override
+    public TFloor getDetailsByUrl(String url, String housesName) {
+
+        TFloor floor = new TFloor();
+
+        String floorName = null;  // 地块名称
+        String fdcUrl = url;  // 地块详情页面政府网URL
+        String canSold = null;  // 可售套数
+        String address = null;  // 项目地址
         String county = null;  // 所在区县
         String scale = null;  // 项目规模
         String totalPlotsNumber = null;  // 总栋数
         String property = null;  // 物业公司
-        UUID pHousesId = houses.getHousesId();  // 所属楼盘ID
-        String pHousesName = houses.getHousesName();  // 所属楼盘名称
+        UUID pHousesId = null;  // 所属楼盘ID
+        String pHousesName = housesName;  // 所属楼盘名称
         String pRebId = null;  // 所属房产商ID
         String pRebName = null;  // 所属房产商名称
 
         // 根据url继续下潜抓取详细信息
         Document detailedDoc = null;  // 承载抓取到的房产商详细数据
         try {
-            detailedDoc = Jsoup.connect(fdcUrl).timeout(5000).get();
+            detailedDoc = Jsoup.connect(url).timeout(5000).get();
             Elements trs = detailedDoc.select(".message_table tr");
 
+            floorName = trs.eq(1).select("td").eq(1).text();
+            address = trs.eq(1).select("td").eq(3).text();
             pRebName = trs.eq(2).select("td").eq(1).text();
             county = trs.eq(2).select("td").eq(3).text();
             scale = trs.eq(3).select("td").eq(1).text();
             totalPlotsNumber = trs.eq(3).select("td").eq(3).text();
             property = trs.eq(5).select("td").eq(1).text();
 
-            houses.setpRebName(pRebName);
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[地块]   楼盘["+pHousesName+"]>>>>>>地块["+floorName+"]详细数据完成!");
         } catch (IOException e) {
             // 组织错误信息，供返回使用
@@ -166,8 +198,8 @@ public class FloorServiceImpl implements IFloorService {
                     "地块["+floorName+"]",
                     fdcUrl,
                     e.toString(),
-                    houses.getpRebName(),
-                    houses.getFdcHousesName(),
+                    "",
+                    housesName,
                     ""
             );
 
@@ -189,14 +221,5 @@ public class FloorServiceImpl implements IFloorService {
         floor.setpRebName(pRebName);
 
         return floor;
-    }
-
-    /**
-     * 根据某个地块详细页面的url获取这一个地块的详细数据
-     */
-    @Override
-    public TFloor getFloorDetailsByUrl(String url) {
-
-        return null;
     }
 }

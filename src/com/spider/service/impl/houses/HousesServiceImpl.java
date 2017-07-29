@@ -100,7 +100,7 @@ public class HousesServiceImpl implements IHousesService {
      * 根据某一页楼盘的url获取获取这一页的楼盘数据和下潜的数据
      */
     @Override
-    public Map<String, List> getPageListByUrl(String url, boolean isAll) {
+    public Map<String, List> getPageListByUrl(String url, boolean isInfiltrate) {
 
         Map<String, List> allData = new HashMap<String, List>();  // 承载此接口返回的所有数据
         List<THouses> allHousesList = new ArrayList<THouses>();  // 承载所有楼盘数据集合
@@ -120,7 +120,7 @@ public class HousesServiceImpl implements IHousesService {
         }
 
         // 根据楼盘列表获取它们的地块、单元楼数据列表
-        if (isAll) {
+        if (isInfiltrate) {
             /**
              * 跑全部数据这里要放开
              */
@@ -137,7 +137,7 @@ public class HousesServiceImpl implements IHousesService {
 
             // 根据楼盘列表，从政府网获取所有地块、单元楼的数据
             FloorServiceImpl floorService = new FloorServiceImpl();
-            Map<String, List> floorAndPlotsData = floorService.getFloorListByAllHouses(tempHousesList);
+            Map<String, List> floorAndPlotsData = floorService.getAllListByAllHouses(tempHousesList);
 
             allData.put("allFloorList", floorAndPlotsData.get("allFloorList"));
             allData.put("allPlotsList", floorAndPlotsData.get("allPlotsList"));
