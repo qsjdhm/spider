@@ -27,7 +27,7 @@ public class HousesServiceImpl implements IHousesService {
      * 从搜房网获取全部楼盘数据,包含全部的楼盘、全部的地块、全部的单元楼数据
      */
     @Override
-    public Map<String, List> getAllHouses() {
+    public Map<String, List> getAllList() {
 
         Map<String, List> allData = new HashMap<String, List>();  // 承载此接口返回的所有数据
 
@@ -51,7 +51,7 @@ public class HousesServiceImpl implements IHousesService {
              */
             String sfwUrl = "http://newhouse.jn.fang.com/house/dianshang/b9"+sfwUrlPageNumer;
 
-            Map<String, List> pageAllData = getHousesListByUrl(sfwUrl, true);
+            Map<String, List> pageAllData = getPageListByUrl(sfwUrl, true);
 
             List<THouses> pageHousesList = pageAllData.get("allHousesList");
             List<TFloor> pageFloorList = pageAllData.get("allFloorList");
@@ -100,7 +100,7 @@ public class HousesServiceImpl implements IHousesService {
      * 根据某一页楼盘的url获取获取这一页的楼盘数据和下潜的数据
      */
     @Override
-    public Map<String, List> getHousesListByUrl(String url, boolean isAll) {
+    public Map<String, List> getPageListByUrl(String url, boolean isAll) {
 
         Map<String, List> allData = new HashMap<String, List>();  // 承载此接口返回的所有数据
         List<THouses> allHousesList = new ArrayList<THouses>();  // 承载所有楼盘数据集合
@@ -113,7 +113,7 @@ public class HousesServiceImpl implements IHousesService {
 
             for (Element li : lis) {
                 // 抓取详细信息
-                allHousesList.add(getHousesDetailsByElement(li));
+                allHousesList.add(getDetailsByElement(li));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -153,7 +153,7 @@ public class HousesServiceImpl implements IHousesService {
      * 根据从搜房网抓取的每一条楼盘数据下潜获取楼盘的详情数据
      */
     @Override
-    public THouses getHousesDetailsByElement(Element li) {
+    public THouses getDetailsByElement(Element li) {
 
         /**
          * 为了避免获取详情出错导致无法获取楼盘名称，如果没有楼盘名称，就无法获取政府网的地块、单元楼数据了
@@ -164,7 +164,7 @@ public class HousesServiceImpl implements IHousesService {
         String cover = li.select(".nlc_img img").eq(1).attr("src");
         String address = li.select(".nlc_details .address a").text();
 
-        THouses houses = getHousesDetailsByUrl(sfwUrl);
+        THouses houses = getDetailsByUrl(sfwUrl);
 
         houses.setHousesName(name);
         houses.setCover(cover);
@@ -177,7 +177,7 @@ public class HousesServiceImpl implements IHousesService {
      * 根据某个楼盘详细页面的url获取这一个楼盘的详细数据
      */
     @Override
-    public THouses getHousesDetailsByUrl(String url) {
+    public THouses getDetailsByUrl(String url) {
 
         THouses houses = new THouses();
 
@@ -187,6 +187,7 @@ public class HousesServiceImpl implements IHousesService {
         String address = null;
         String averagePrice = null;
         String openingDate = null;
+        String pRebName = null;
 
         // 根据url继续下潜抓取详细信息
         Document detailedDoc = null;  // 承载抓取到的楼盘详细数据
@@ -200,12 +201,14 @@ public class HousesServiceImpl implements IHousesService {
                 address = detailedDoc.select(".lp-type").eq(3).select("i").text();
                 averagePrice = detailedDoc.select(".l-price strong").text();
                 openingDate = detailedDoc.select(".lp-type").eq(2).select("a").text();
+                pRebName = detailedDoc.select("#txt_developer").attr("value").trim();
             } else {
                 name = detailedDoc.select(".inf_left1 strong").text();
                 cover = detailedDoc.select(".bannerbg_pos a img").attr("src");
                 address = detailedDoc.select("#xfdsxq_B04_12 span").text();
                 averagePrice = detailedDoc.select(".prib").text();
                 openingDate = detailedDoc.select(".kaipan").text();
+                pRebName = detailedDoc.select("#txt_developer").attr("value").trim();
             }
 
             LogFile.writerLogFile(Constant.SPIDER_LOG_PATH, Constant.SUCCESS, "抓取[楼盘]   ["+name+"]详细数据完成!");
@@ -237,6 +240,7 @@ public class HousesServiceImpl implements IHousesService {
         houses.setAddress(address);
         houses.setAveragePrice(averagePrice);
         houses.setOpeningDate(openingDate);
+        houses.setpRebName(pRebName);
 
         return houses;
     }
