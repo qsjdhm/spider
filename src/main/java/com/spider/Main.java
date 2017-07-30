@@ -23,7 +23,7 @@ public class Main {
 
 
         RebServiceImpl rebService = new RebServiceImpl();
-        List<TReb> allRebList = rebService.getAllList();
+        List<TReb> allRebList = rebService.getPageListByUrl("http://www.jnfdc.gov.cn/kfqy/index_2.shtml");
 
         System.out.println("---------------------房产商数据---------------------");
         System.out.println("房产商个数"+allRebList.size());
