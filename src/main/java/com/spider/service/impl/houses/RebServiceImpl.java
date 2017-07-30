@@ -1,6 +1,6 @@
 package com.spider.service.impl.houses;
 
-import com.spider.config.Constant;
+import com.spider.utils.Constant;
 import com.spider.entity.houses.TReb;
 import com.spider.service.houses.IRebService;
 import com.spider.service.impl.system.SpiderErrorServiceImpl;

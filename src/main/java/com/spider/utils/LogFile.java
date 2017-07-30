@@ -30,6 +30,13 @@ public class LogFile {
         if (logFile.exists()) {
             writerContent(path, "["+type+"] " + "[" +detailsDate+"] " + msg);
         } else {
+            if(!logFile.getParentFile().exists()) {
+                //如果目标文件所在的目录不存在，则创建父目录
+                System.out.println("目标文件所在目录不存在，准备创建它！");
+                if(!logFile.getParentFile().mkdirs()) {
+                    System.out.println("创建目标文件所在目录失败！");
+                }
+            }
             try {
                 logFile.createNewFile();
                 writerContent(path, "["+type+"] " + "[" +detailsDate+"] " + msg);

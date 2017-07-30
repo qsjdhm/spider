@@ -1,6 +1,6 @@
 package com.spider.service.impl.houses;
 
-import com.spider.config.Constant;
+import com.spider.utils.Constant;
 import com.spider.entity.houses.TFloor;
 import com.spider.entity.houses.THouses;
 import com.spider.entity.houses.TPlots;

@@ -1,8 +1,6 @@
-package com.spider.config;
+package com.spider.utils;
 
-import java.io.File;
-
-import static java.io.File.*;
+import static java.io.File.separator;
 
 /**
  * Created by zhangyan on 17/7/23.
